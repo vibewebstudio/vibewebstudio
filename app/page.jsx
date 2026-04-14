@@ -263,9 +263,9 @@ function Navbar() {
           <button
             onClick={(e) => { createRipple(e); scrollTo("contact"); }}
             {...magnetic}
-            aria-label="Start a new project"
+            aria-label="Start your project"
             className="btn-primary px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-wide hidden sm:block">
-            Start Project
+            Start Your Project
           </button>
           <button onClick={() => setMobile(p => !p)}
             className="md:hidden flex flex-col gap-1.5 p-2"
@@ -316,7 +316,7 @@ function Navbar() {
             transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
           }}
           className="btn-primary w-full mt-4 py-3 rounded-full font-headline font-bold text-sm">
-          Start Project
+          Start Your Project
         </button>
       </div>
     </nav>
@@ -383,7 +383,6 @@ function PlexusCanvas() {
     canvas.addEventListener("mousemove", onMove);
     canvas.addEventListener("mouseleave", onLeave);
 
-    // Pause rendering when hero is out of view — saves CPU & battery
     const visObserver = new IntersectionObserver(
       ([entry]) => { pausedRef.current = !entry.isIntersecting; },
       { threshold: 0 }
@@ -434,7 +433,7 @@ function PlexusCanvas() {
 
     function draw() {
       raf = requestAnimationFrame(draw);
-      if (pausedRef.current) return; // ← saves CPU when hero is off-screen
+      if (pausedRef.current) return;
       t++;
       const cw = canvas.width;
       const ch = canvas.height;
@@ -557,34 +556,34 @@ function Hero() {
           style={{ background:"var(--c-sc-high)", color:"var(--c-secondary)", border:"1px solid rgba(0,207,252,0.25)" }}>
           <span style={{ width:6,height:6,borderRadius:"50%",background:"var(--c-secondary)",display:"inline-block",
             boxShadow:"0 0 8px var(--c-secondary)",animation:"neon-flow 2s ease infinite" }} />
-          Future-Ready Digital Solutions
+          Premium Web Design &amp; Development Studio
         </span>
         <h1 className="reveal reveal-delay-1 font-headline font-black tracking-tighter mb-8 leading-[1.05]"
           style={{ fontSize:"clamp(2.8rem,8vw,6rem)", color:"var(--c-on-surface)" }}>
-          We Build Websites That
-          <em className="neon-text not-italic"> Convert</em>,<br />
-          Scale, and Dominate
+          Websites That Win Clients,
+          <em className="neon-text not-italic"> Drive Revenue</em>,<br />
+          and Outrank Rivals
         </h1>
         <p className="reveal reveal-delay-2 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light leading-relaxed"
           style={{ color:"var(--c-on-sv)" }}>
-          Performance-driven web solutions to accelerate your business growth. We blend high-end architecture with technical precision.
+          We design and build high-performance websites that turn visitors into paying customers. Every pixel is crafted with purpose — every line of code built to scale.
         </p>
         <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-5">
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            aria-label="Get your website built"
+            aria-label="Start your project with VibeWebStudio"
             className="btn-primary w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Get Your Website
+            Start Your Project
           </button>
-          <button onClick={(e) => { createRipple(e); scrollTo("portfolio"); }}
-            aria-label="View our portfolio"
+          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }}
+            aria-label="Book a free consultation"
             className="btn-ghost w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
-            View Work
+            Book a Free Consultation
           </button>
         </div>
         <div className="reveal reveal-delay-4 flex flex-wrap items-center justify-center gap-8 mt-16 pt-8"
           style={{ borderTop:"1px solid rgba(72,71,77,0.15)" }}>
           {[
-            { value:"50+", label:"Projects Shipped" },
+            { value:"50+", label:"Projects Delivered" },
             { value:"100%", label:"Client Satisfaction" },
             { value:"3×", label:"Avg. Conversion Lift" },
           ].map(({ value, label }) => (
@@ -607,9 +606,9 @@ function Hero() {
 // ── SERVICES ───────────────────────────────────────────────────────────────
 function Services() {
   const services = [
-    { icon:"web",      title:"Website Design",    desc:"High-end editorial aesthetics met with strategic UX patterns to capture and retain attention.", color:"var(--c-primary)",   bg:"rgba(187,158,255,0.1)" },
-    { icon:"code",     title:"Web Development",   desc:"Clean, scalable code built on modern frameworks for maximum performance and future-proofing.", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.1)"   },
-    { icon:"insights", title:"UI/UX Optimization",desc:"Data-driven design refinements that remove friction and maximize user engagement metrics.",    color:"var(--c-tertiary)",  bg:"rgba(170,255,220,0.1)" },
+    { icon:"web",      title:"Website Design",    desc:"We craft visually striking, strategically structured designs that capture attention and guide visitors toward conversion — turning first impressions into lasting business relationships.", color:"var(--c-primary)",   bg:"rgba(187,158,255,0.1)" },
+    { icon:"code",     title:"Web Development",   desc:"Clean, scalable code built on modern frameworks like Next.js and React. Your site loads fast, performs flawlessly, and is engineered to grow with your business.", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.1)"   },
+    { icon:"insights", title:"UI/UX Optimisation",desc:"We identify friction points in your user journey and fix them. Every interaction is refined to boost engagement, reduce drop-offs, and drive measurable business results.",    color:"var(--c-tertiary)",  bg:"rgba(170,255,220,0.1)" },
   ];
 
   return (
@@ -619,10 +618,10 @@ function Services() {
       <div className="svc-dot" style={{ position:"absolute", width:140, height:140, borderRadius:"50%", top:"50%", left:"45%", background:"rgba(170,255,220,0.08)", filter:"blur(50px)", pointerEvents:"none", "--dur":"8s", animationDelay:"4s" }} />
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 reveal-left">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What we do</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Our Expertise</h2>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What We Do</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Built to Perform</h2>
           <p className="mt-4 max-w-xl leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
-            We don't just build pages; we architect digital ecosystems designed for peak conversion and seamless user flows.
+            We don't just build websites — we build growth engines. Every service we offer is engineered to deliver measurable outcomes for your business.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
@@ -685,7 +684,7 @@ function PortfolioModal({ project, onClose }) {
           </div>
           <div className="flex gap-3">
             <button onClick={(e) => { createRipple(e); scrollTo("contact"); onClose(); }} {...magnetic}
-              className="btn-primary flex-1 py-4 rounded-xl font-headline font-bold">Start Similar Project</button>
+              className="btn-primary flex-1 py-4 rounded-xl font-headline font-bold">Start a Similar Project</button>
             <button onClick={onClose} className="btn-ghost px-6 py-4 rounded-xl font-headline font-bold">Close</button>
           </div>
         </div>
@@ -710,7 +709,7 @@ function Portfolio() {
       tags: [{ label:"React", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Next.js", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
       category: "React",
       title: "Nebula Fintech Platform",
-      description: "A high-performance fintech dashboard built with React and Next.js featuring real-time data, custom charting, and an enterprise-grade design system. Achieved a 4.8% conversion rate — up from 1.2%.",
+      description: "A high-performance fintech dashboard built for a Series A startup. Real-time data visualisation, enterprise-grade design system, and a seamless onboarding flow — together lifting their conversion rate from 1.2% to 4.8% within 90 days.",
       stats: [{ value:"4.8%", label:"Conversion" }, { value:"98", label:"Perf Score" }, { value:"3 wks", label:"Delivered" }],
     },
     {
@@ -718,7 +717,7 @@ function Portfolio() {
       tags: [{ label:"HTML", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Web3", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
       category: "Web3",
       title: "Etheria NFT Hub",
-      description: "A visually immersive NFT marketplace with wallet integration, real-time auction mechanics, and a meticulously crafted dark-fantasy aesthetic. Featured on Product Hunt.",
+      description: "An immersive NFT marketplace built for a Web3 creative collective. Wallet integration, real-time live auctions, and a dark-fantasy aesthetic that set the brand apart — attracting 12,000 users in the first month and a Product Hunt feature.",
       stats: [{ value:"12K", label:"Users" }, { value:"99", label:"Perf Score" }, { value:"4 wks", label:"Delivered" }],
     },
     {
@@ -726,23 +725,23 @@ function Portfolio() {
       tags: [{ label:"E-Commerce", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"Next.js", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }],
       category: "E-Commerce",
       title: "LuxeCart E-Commerce",
-      description: "A premium storefront built from scratch with Next.js, featuring lightning-fast product pages, smart search, and a frictionless checkout flow that cut cart abandonment by 38%.",
-      stats: [{ value:"2.1s", label:"Load Time" }, { value:"38%", label:"Cart Conv." }, { value:"5 wks", label:"Delivered" }],
+      description: "A premium D2C storefront built from scratch for a fashion retailer. Blazing-fast product pages, intelligent search, and a frictionless one-page checkout that reduced cart abandonment by 38% and doubled average order value.",
+      stats: [{ value:"2.1s", label:"Load Time" }, { value:"38%", label:"Less Abandonment" }, { value:"5 wks", label:"Delivered" }],
     },
     {
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDswEGNWQuteJR-LtDfOAhmUhLzEdPkzgoQDHxMyLdC_tzCbpldwsGNmXgEB-ZwuExaCuUEGwLLQqKG9DGjdQuNIUwRKASUHffKy9Zn8jqSKzYVMoupwxb6OXuX-7akgoVo73SEy5RH6YA7rwbO-4uwjsStqr8kBH74IplZTL5zvIdZZOqtM1WbUTxUL-05wcYAQV9lo5P36nC39zEq3IE",
       tags: [{ label:"React", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"UI/UX", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
       category: "React",
       title: "ZenithHR Web App",
-      description: "A full-featured HR management web app with employee onboarding flows, analytics dashboards, and an accessible design system built to scale across teams.",
-      stats: [{ value:"200+", label:"Users" }, { value:"97", label:"Perf Score" }, { value:"6 wks", label:"Delivered" }],
+      description: "A full-featured HR management platform for a growing SaaS company. Custom onboarding flows, analytics dashboards, and an accessible design system engineered to scale across hundreds of enterprise teams without friction.",
+      stats: [{ value:"200+", label:"Active Users" }, { value:"97", label:"Perf Score" }, { value:"6 wks", label:"Delivered" }],
     },
     {
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAeHGOhf2Xo8TrG5bxunHwnKbLVjROdmB26iVfOpg7S_rNL9RsZDTuRaVUu8Bw_V63QdmnhkzZEENChIGivXTlkvDeKOLbz7uA4PbQy8sAqa2IgAT9UFjzVKqpIf5Qah03lXbZ6CyDjV221CHflvdjHcUIdq4KR-cuZP4N915pEsxUZlqWlIiKoHfvN_yLuF9q1_fZpbSfy-RCCIwgnUbEfX8LJDIAXG21At12x9y64lW0Gv4ByrzNi-ilxd4VuaDrpNB2RPuOlLQ9f",
       tags: [{ label:"HTML", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"SEO", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }],
       category: "Landing Page",
       title: "PeakLocal Agency Site",
-      description: "A conversion-optimised multi-page agency website with structured data, advanced SEO, and a powerful contact funnel — ranked page 1 on Google within 6 weeks of launch.",
+      description: "A conversion-optimised multi-page website built for a regional agency seeking national reach. Advanced on-page SEO, structured data, and a powerful lead funnel — ranking on Google Page 1 within just six weeks of launch.",
       stats: [{ value:"Page 1", label:"Google Rank" }, { value:"6 wks", label:"To Rank" }, { value:"2 wks", label:"Delivered" }],
     },
     {
@@ -750,8 +749,8 @@ function Portfolio() {
       tags: [{ label:"E-Commerce", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"UI/UX", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
       category: "E-Commerce",
       title: "Bloom Wellness Store",
-      description: "A health D2C storefront with a subscription model, loyalty program, and editorial aesthetic. The clean checkout UX drove a 52% repeat purchase rate within the first quarter.",
-      stats: [{ value:"52%", label:"Repeat Buy" }, { value:"4.9★", label:"Rating" }, { value:"3 wks", label:"Delivered" }],
+      description: "A health and wellness D2C brand powered by a subscription model and loyalty programme. The editorial aesthetic paired with a frictionless checkout drove a 52% repeat purchase rate — and a 4.9-star customer rating — in the first quarter.",
+      stats: [{ value:"52%", label:"Repeat Purchases" }, { value:"4.9★", label:"Customer Rating" }, { value:"3 wks", label:"Delivered" }],
     },
   ];
 
@@ -765,15 +764,15 @@ function Portfolio() {
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 reveal">
           <div>
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Selected Works</span>
-            <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Recent Works</h2>
+            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Our Work</span>
+            <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Results We've Delivered</h2>
             <p className="mt-3 max-w-md text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-              Browse our latest deployments where design meets technical excellence.
+              Real projects, real outcomes. Explore how we've helped businesses grow through purposeful design and precision engineering.
             </p>
           </div>
           <button onClick={() => scrollTo("contact")} aria-label="Start a project with us"
             className="flex items-center gap-2 font-headline font-bold text-sm" style={{ color:"var(--c-primary)" }}>
-            Start a Project <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:18 }}>arrow_forward</span>
+            Start Your Project <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:18 }}>arrow_forward</span>
           </button>
         </div>
 
@@ -829,32 +828,32 @@ function Portfolio() {
 function Pricing() {
   const plans = [
     {
-      name: "Basic", price: "₹5,000", priceVal: 5000, sub: "Perfect for startups",
+      name: "Starter", price: "₹5,000", priceVal: 5000, sub: "Perfect for new businesses",
       features: [
         { text:"5 Custom Pages",    check: true  },
-        { text:"Basic SEO",         check: true  },
+        { text:"Basic SEO Setup",   check: true  },
         { text:"Mobile Responsive", check: true  },
         { text:"Custom Animations", check: false },
       ],
       featured: false, delay: 1,
     },
     {
-      name: "Pro", price: "₹7,000", priceVal: 7000, sub: "Scaling businesses",
+      name: "Growth", price: "₹7,000", priceVal: 7000, sub: "For businesses ready to scale",
       features: [
         { text:"12 Custom Pages",       check: true },
         { text:"Advanced SEO & Schema", check: true },
-        { text:"Animated Interactions", check: true },
+        { text:"Premium Animations",    check: true },
         { text:"Content Strategy",      check: true },
       ],
       featured: true, delay: 2,
     },
     {
-      name: "Premium", price: "₹12,000", priceVal: 12000, sub: "Enterprise authority",
+      name: "Authority", price: "₹12,000", priceVal: 12000, sub: "For serious market leaders",
       features: [
-        { text:"Unlimited Pages",        check: true },
-        { text:"Custom API Integrations",check: true },
-        { text:"Full Digital Brand Kit", check: true },
-        { text:"1 Year Support",         check: true },
+        { text:"Unlimited Pages",         check: true },
+        { text:"Custom API Integrations", check: true },
+        { text:"Full Digital Brand Kit",  check: true },
+        { text:"1 Year Priority Support", check: true },
       ],
       featured: false, delay: 3,
     },
@@ -869,10 +868,10 @@ function Pricing() {
       }} />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 reveal-right">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Invest in Quality</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Investment Options</h2>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Transparent Pricing</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Simple, Honest Pricing</h2>
           <p className="mt-4 max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
-            Transparent pricing for every stage of your digital journey. All plans are flexible and tailored to your exact needs.
+            No hidden fees. No surprises. Just straightforward pricing built around the value we deliver — choose the plan that fits your ambition.
           </p>
         </div>
 
@@ -904,11 +903,11 @@ function Pricing() {
               {plan.featured ? (
                 <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
                   aria-label={`Choose the ${plan.name} plan`}
-                  className="btn-primary w-full py-4 rounded-xl font-headline font-bold">Choose Plan</button>
+                  className="btn-primary w-full py-4 rounded-xl font-headline font-bold">Get Started</button>
               ) : (
                 <button onClick={(e) => { createRipple(e); scrollTo("contact"); }}
                   aria-label={`Choose the ${plan.name} plan`}
-                  className="btn-ghost w-full py-4 rounded-xl font-headline font-bold">Choose Plan</button>
+                  className="btn-ghost w-full py-4 rounded-xl font-headline font-bold">Get Started</button>
               )}
             </div>
           ))}
@@ -923,16 +922,16 @@ function Pricing() {
               <span className="material-symbols-outlined text-2xl" aria-hidden="true">manage_accounts</span>
             </div>
             <div>
-              <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>Need Something Custom?</h4>
+              <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>Have a Bigger Vision?</h4>
               <p className="text-sm leading-relaxed max-w-lg" style={{ color:"var(--c-on-sv)" }}>
-                Got a unique idea, a larger scope, or a tight budget? Every website we build is bespoke — let's talk numbers with zero obligation.
+                Complex platform, unique requirements, or a tight timeline? We love a challenge. Tell us about it — we'll put together a custom proposal at no cost.
               </p>
             </div>
           </div>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
             aria-label="Request a custom project quote"
             className="btn-primary flex-shrink-0 px-8 py-4 rounded-full font-headline font-bold whitespace-nowrap">
-            Get Custom Quote
+            Request a Custom Quote
           </button>
         </div>
       </div>
@@ -943,9 +942,9 @@ function Pricing() {
 // ── EDGE ────────────────────────────────────────────────────────────────────
 function Edge() {
   const points = [
-    { icon:"speed",   title:"Fast Delivery", desc:"Rapid development sprints without compromising on the meticulous details.", color:"var(--c-secondary)" },
-    { icon:"search",  title:"SEO Optimized", desc:"Engineered from the ground up to rank on page one of search results.",     color:"var(--c-primary)"   },
-    { icon:"devices", title:"Mobile First",  desc:"Flawless experiences across all viewports and devices.",                   color:"var(--c-tertiary)"  },
+    { icon:"speed",   title:"Delivered on Time, Every Time", desc:"We operate in focused sprints, moving fast without cutting corners. You get a polished, production-ready website on schedule — no delays, no excuses.",       color:"var(--c-secondary)" },
+    { icon:"search",  title:"Built to Rank on Google",       desc:"SEO isn't an afterthought — it's engineered into every page from day one. We give your site the technical foundation to appear where your customers are searching.", color:"var(--c-primary)"   },
+    { icon:"devices", title:"Flawless on Every Device",      desc:"Your customers browse on phones, tablets, and desktops. We ensure your site looks and performs perfectly across all screen sizes, without compromise.",             color:"var(--c-tertiary)"  },
   ];
 
   return (
@@ -963,9 +962,9 @@ function Edge() {
       ))}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center" style={{ position:"relative", zIndex:1 }}>
         <div className="reveal-left">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-4" style={{ color:"var(--c-tertiary)" }}>Why us</span>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-4" style={{ color:"var(--c-tertiary)" }}>Why Choose Us</span>
           <h2 className="font-headline font-black tracking-tighter mb-10" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-            The Edge We Provide
+            The Standard We Hold Ourselves To
           </h2>
           <div className="space-y-8">
             {points.map((p) => (
@@ -988,7 +987,7 @@ function Edge() {
           <div className="relative z-10 rounded-2xl overflow-hidden" style={{ boxShadow:"0 24px 80px rgba(0,0,0,0.5)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNolCUZrrQPqCNvsixPD6sRERdyjRv68NA26iwvwIvex2MzXtOh4_RFexlblV-dvtQmLBDsizJ5A0QkkhIrp9hWQOJTEUpiFz8hzDAeOFBmOWGx-aDgvoEb1zMsGBxB_u6-TNZXo0PHPw-3L4FfUJasS2ou5SZQOtvGMTmtbSlNRGbehy2-QBW5rPTE_28ac23z8OFmd268Xa7hiXq19J3UGkaGtgjwDp0ESgI08Xm_xlwA4_hBKMj7NYCgJBTcabpNOwEFw0EqzPP"
-              alt="VibeWebStudio team collaborating on a web project" className="w-full h-full object-cover" />
+              alt="VibeWebStudio team collaborating on a client project" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>
@@ -999,18 +998,18 @@ function Edge() {
 // ── PROCESS ────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
-    { num:"1", title:"Discussion",  desc:"Deep dive into your goals, audience, and market landscape.",               color:"var(--c-primary)",   text:"#1a003d" },
-    { num:"2", title:"Design",      desc:"Crafting the visual identity and high-fidelity wireframes.",               color:"var(--c-secondary)", text:"#003a48" },
-    { num:"3", title:"Development", desc:"Translating pixels into high-performance, functional code.",               color:"var(--c-tertiary)",  text:"#00654b" },
-    { num:"4", title:"Launch",      desc:"Going live with precision tracking and performance audits.", gradient: true                                          },
+    { num:"1", title:"Discovery",   desc:"We start by understanding your business goals, target audience, and competitive landscape — so every decision we make is grounded in strategy.", color:"var(--c-primary)",   text:"#1a003d" },
+    { num:"2", title:"Design",      desc:"We design high-fidelity mockups that balance visual impact with intuitive user flows. You see exactly what you're getting before a single line of code is written.", color:"var(--c-secondary)", text:"#003a48" },
+    { num:"3", title:"Development", desc:"Your approved designs come to life in clean, modern code. We build for speed, accessibility, and future scalability — no bloat, no shortcuts.", color:"var(--c-tertiary)",  text:"#00654b" },
+    { num:"4", title:"Launch",      desc:"We deploy with precision, run performance audits, and stay by your side through go-live. Your site launches ready to impress — and ready to convert.", gradient: true },
   ];
 
   return (
     <section id="process" style={{ background:"#000", padding:"8rem 1.5rem" }}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How we work</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Our Workflow</h2>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How We Work</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>A Process Built for Results</h2>
         </div>
         <div className="relative">
           <div className="absolute top-[3.5rem] left-0 right-0 h-px hidden md:block" aria-hidden="true"
@@ -1041,9 +1040,9 @@ function Process() {
 // ── TESTIMONIALS ────────────────────────────────────────────────────────────
 function Testimonials() {
   const testimonials = [
-    { quote:'"VibeWebStudio transformed our conversion rate from 1.2% to 4.8% in just 3 months. Their design eye is unmatched."', name:"Alex Rivera",   role:"CEO, NexaSystems"    },
-    { quote:'"The level of technical professionalism and architectural thought they put into our platform was incredible."',       name:"Sarah Chen",    role:"Founder, BloomDigital"},
-    { quote:'"They don\'t just build websites; they build business engines. Highly recommend for any serious brand."',             name:"Marcus Thorne", role:"CTO, ZenithLogic"    },
+    { quote:'"VibeWebStudio transformed our conversion rate from 1.2% to 4.8% in just three months. Their design instinct and technical precision are genuinely world-class."', name:"Alex Rivera",   role:"CEO, NexaSystems"    },
+    { quote:'"The architectural thinking they brought to our platform was unlike anything I\'d seen from an agency at this price point. Delivered ahead of schedule and beyond expectations."', name:"Sarah Chen",    role:"Founder, BloomDigital"},
+    { quote:'"They don\'t just build websites — they build revenue machines. Our leads tripled in 60 days. I\'d recommend VibeWebStudio to any brand that takes growth seriously."', name:"Marcus Thorne", role:"CTO, ZenithLogic"    },
   ];
 
   return (
@@ -1052,8 +1051,8 @@ function Testimonials() {
       <div className="quote-bg" style={{ bottom:"-4rem", right:"-1rem", "--qd":"12s", animationDirection:"reverse" }} aria-hidden="true">"</div>
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Social Proof</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Trusted by Leaders</h2>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Client Stories</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Trusted by Ambitious Founders</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
           {testimonials.map((t, i) => (
@@ -1081,27 +1080,27 @@ function FAQ() {
   const faqs = [
     {
       q: "How long does it take to build a website?",
-      a: "Timelines vary by complexity. A landing page or Basic site typically takes 1–2 weeks. Pro and Premium projects run 3–5 weeks. We'll give you a clear timeline after our discovery call — and we always hit it.",
+      a: "Timelines vary by scope. A landing page or Starter site typically takes 1–2 weeks. Growth and Authority projects run 3–5 weeks. After our discovery call, we'll give you a clear, committed timeline — and we always deliver on it.",
     },
     {
       q: "How many revisions are included?",
-      a: "Every plan includes unlimited revisions during the design phase and two rounds of revisions post-development. We want you to be genuinely happy with the result, so we never nickel-and-dime on feedback.",
+      a: "Every plan includes unlimited revisions during the design phase, plus two full rounds of revisions after development. We want you to be genuinely proud of the result — we never limit feedback or charge for reasonable changes.",
     },
     {
       q: "Will my website be hosted? What about domain and maintenance?",
-      a: "We can set up hosting on Vercel, Netlify, or your preferred provider — typically free or very low cost for most projects. Optional monthly maintenance retainers start at ₹1,500/mo for updates, security, and performance monitoring.",
+      a: "We can set up hosting on Vercel, Netlify, or your preferred provider — typically free or very low cost for most projects. Optional monthly maintenance retainers start at ₹1,500/mo and cover updates, security, and performance monitoring.",
     },
     {
       q: "Do you work with clients outside India?",
-      a: "Yes — we work with clients globally. All communication happens over WhatsApp, email, or video call. Payments can be made in INR, USD, or EUR. Timezone coordination is never an issue.",
+      a: "Yes — we work with clients worldwide. All collaboration happens over WhatsApp, email, or video call. Payments are accepted in INR, USD, or EUR, and timezone differences are never an obstacle.",
     },
     {
-      q: "What do you need from me to get started?",
-      a: "Just fill in the contact form with your project type, budget, and a brief description. We'll hop on a quick call, send a proposal within 24 hours, and kick off once you approve. You'll need to provide brand assets (logo, colours) and any content — we can help create content too.",
+      q: "What do I need to provide to get started?",
+      a: "Simply fill in the contact form with your project type, budget, and a brief description of your goals. We'll schedule a quick discovery call, send a detailed proposal within 24 hours, and kick off as soon as you're ready. You'll need to supply brand assets (logo, colours) and any existing content — we can help with content creation too.",
     },
     {
       q: "Can you redesign my existing website?",
-      a: "Absolutely — redesigns are some of our favourite projects. We audit your current site, identify conversion leaks and performance issues, then rebuild it from scratch with a modern stack, preserving your SEO equity in the process.",
+      a: "Absolutely — redesigns are among our most rewarding projects. We audit your existing site to identify conversion leaks, performance gaps, and UX problems, then rebuild it from the ground up on a modern stack — preserving your SEO equity throughout the process.",
     },
   ];
 
@@ -1110,11 +1109,11 @@ function FAQ() {
       <div className="svc-dot" style={{ position:"absolute", width:280, height:280, borderRadius:"50%", top:"10%", right:"-4%", background:"rgba(170,255,220,0.08)", filter:"blur(80px)", pointerEvents:"none", "--dur":"11s" }} />
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Got Questions?</span>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Common Questions</span>
           <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-            Frequently Asked
+            Everything You Need to Know
           </h2>
-          <p className="mt-4 text-sm" style={{ color:"var(--c-on-sv)" }}>Everything you need to know before starting your project.</p>
+          <p className="mt-4 text-sm" style={{ color:"var(--c-on-sv)" }}>Clear, honest answers before you commit to anything.</p>
         </div>
 
         <div className="space-y-3">
@@ -1156,7 +1155,7 @@ function FAQ() {
         </div>
 
         <div className="text-center mt-10 reveal">
-          <p className="text-sm mb-4" style={{ color:"var(--c-on-sv)" }}>Still have questions?</p>
+          <p className="text-sm mb-4" style={{ color:"var(--c-on-sv)" }}>Still have questions? We're happy to help.</p>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
             aria-label="Go to contact form to ask a question"
             className="btn-primary px-8 py-3 rounded-full font-headline font-bold">
@@ -1178,14 +1177,14 @@ function ContactSection() {
   } = useContactForm();
 
   const btnLabel = {
-    idle:    "Let's Build Your Website",
+    idle:    "Send My Project Brief",
     loading: "Sending…",
-    success: "✅ Sent! We'll be in touch.",
-    error:   "❌ Error — try again",
+    success: "✅ Received! We'll be in touch within 24 hours.",
+    error:   "❌ Something went wrong — please try again",
   }[status];
 
   const projectTypes = ["Landing Page", "Business Website", "E-Commerce", "Web App", "UI/UX Design", "Other"];
-  const budgetRanges = ["₹5,000 – Basic", "₹7,000 – Pro", "₹12,000 – Premium", "Custom Budget"];
+  const budgetRanges = ["₹5,000 – Starter", "₹7,000 – Growth", "₹12,000 – Authority", "Custom Budget"];
 
   const FieldErr = ({ field }) => touched[field] && errors[field]
     ? <span className="block text-xs mt-1.5" style={{ color:"#ff6b6b" }} role="alert">{errors[field]}</span>
@@ -1202,26 +1201,26 @@ function ContactSection() {
           <div className="orb" style={{ width:240,height:240,bottom:-80,left:-60,background:"rgba(0,207,252,0.08)",animationDelay:"2s" }} />
 
           <div className="relative z-10 text-center mb-10">
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Let's talk</span>
+            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Get in Touch</span>
             <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3rem)", color:"var(--c-on-surface)" }}>
-              Ready to dominate?
+              Let's Build Something Exceptional
             </h2>
-            <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>Tell us about your project and let's build something iconic.</p>
+            <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>Tell us about your project and we'll send a tailored proposal within 24 hours — no commitment required.</p>
           </div>
 
           <form className="relative z-10 space-y-5" onSubmit={submit} noValidate>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label htmlFor="contact-name" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Your Name *</label>
-                <input id="contact-name" type="text" placeholder="John Doe" required value={name}
+                <input id="contact-name" type="text" placeholder="Jane Smith" required value={name}
                   onChange={(e) => setName(e.target.value)} onBlur={() => touch("name")}
                   aria-invalid={!!(errors.name && touched.name)}
                   className="input-field w-full px-4 py-3 rounded-xl" style={errStyle("name")} />
                 <FieldErr field="name" />
               </div>
               <div>
-                <label htmlFor="contact-email" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Email *</label>
-                <input id="contact-email" type="email" placeholder="john@example.com" required value={email}
+                <label htmlFor="contact-email" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Email Address *</label>
+                <input id="contact-email" type="email" placeholder="jane@yourcompany.com" required value={email}
                   onChange={(e) => setEmail(e.target.value)} onBlur={() => touch("email")}
                   aria-invalid={!!(errors.email && touched.email)}
                   className="input-field w-full px-4 py-3 rounded-xl" style={errStyle("email")} />
@@ -1270,7 +1269,7 @@ function ContactSection() {
 
             <div>
               <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Project Details *</label>
-              <textarea id="contact-message" rows={4} placeholder="Tell us about your project…" required value={message}
+              <textarea id="contact-message" rows={4} placeholder="Tell us about your project — what you need, who it's for, and what success looks like for you." required value={message}
                 onChange={(e) => setMessage(e.target.value)} onBlur={() => touch("message")}
                 aria-invalid={!!(errors.message && touched.message)}
                 className="input-field w-full px-4 py-3 rounded-xl resize-none" style={errStyle("message")} />
@@ -1310,7 +1309,7 @@ function Footer() {
             style={{ height: 56, width: "auto", objectFit: "contain", marginBottom: "0.75rem" }}
           />
           <p className="text-sm max-w-xs leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            © 2026 VibeWebStudio.<br />Digital Architects crafting the future of the web.
+            © 2026 VibeWebStudio.<br />Designing the digital future — one high-performance website at a time.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
