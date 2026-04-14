@@ -439,9 +439,9 @@ function Navbar() {
           <button
             onClick={(e) => { createRipple(e); scrollTo("contact"); }}
             {...magnetic}
-            aria-label="Start your project"
+            aria-label="Get your website"
             className="btn-primary px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-wide hidden sm:block">
-            Start Your Project
+            Get Your Website
           </button>
           <button onClick={() => setMobile(p => !p)}
             className="md:hidden flex flex-col gap-1.5 p-2"
@@ -491,7 +491,7 @@ function Navbar() {
             transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
           }}
           className="btn-primary w-full mt-4 py-3 rounded-full font-headline font-bold text-sm">
-          Start Your Project
+          Get Your Website
         </button>
       </div>
     </nav>
@@ -515,29 +515,37 @@ function Hero() {
           style={{ background:"var(--c-sc-high)", color:"var(--c-secondary)", border:"1px solid rgba(0,207,252,0.25)" }}>
           <span style={{ width:6,height:6,borderRadius:"50%",background:"var(--c-secondary)",display:"inline-block",
             boxShadow:"0 0 8px var(--c-secondary)",animation:"neon-flow 2s ease infinite" }} />
-          Web Design &amp; Development Studio
+          Web Design &amp; Development — India
         </span>
-        <h1 className="reveal reveal-delay-1 font-headline font-black tracking-tighter mb-8 leading-[1.05]"
+        <h1 className="reveal reveal-delay-1 font-headline font-black tracking-tighter mb-6 leading-[1.05]"
           style={{ fontSize:"clamp(2.8rem,8vw,6rem)", color:"var(--c-on-surface)" }}>
-          Websites That Grow
-          <em className="neon-text not-italic"> Your Business</em>
+          Get a Website That
+          <em className="neon-text not-italic"> Actually Gets You Customers</em>
         </h1>
-        <p className="reveal reveal-delay-2 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light leading-relaxed"
+        <p className="reveal reveal-delay-2 text-lg md:text-xl max-w-2xl mx-auto mb-4 font-light leading-relaxed"
           style={{ color:"var(--c-on-sv)" }}>
-          We design and build clean, fast, mobile-ready websites that attract the right customers and help your business grow. No fluff — just results.
+          I build clean, fast, mobile-ready websites for small businesses and startups — so you can focus on running your business, not worrying about your online presence.
+        </p>
+        <p className="reveal reveal-delay-2 text-sm mb-10 font-medium"
+          style={{ color:"var(--c-secondary)" }}>
+          No commitment. Just ideas for your business.
         </p>
         <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-5">
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            aria-label="Start your project with VibeWebStudio"
+            aria-label="Get your website"
             className="btn-primary w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Start Your Project
+            Get Your Website
           </button>
-          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }}
-            aria-label="Contact us"
+          <button onClick={(e) => { createRipple(e); scrollTo("portfolio"); }}
+            aria-label="View sample work"
             className="btn-ghost w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Contact Us
+            See Sample Work
           </button>
         </div>
+        <p className="reveal reveal-delay-4 mt-8 text-xs font-semibold uppercase tracking-widest"
+          style={{ color:"rgba(170,255,220,0.7)" }}>
+          ✦ Currently accepting 2 new projects this month
+        </p>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
         style={{ opacity:0.35, zIndex:10 }} aria-hidden="true">
@@ -554,21 +562,21 @@ function Services() {
     {
       icon:"web",
       title:"Website Design",
-      desc:"We create clean, modern designs that make a strong first impression and guide visitors toward taking action — whether that's calling you, buying, or filling out a form.",
+      desc:"A design that looks professional and guides visitors toward contacting you, buying, or taking the next step. First impressions matter — we make sure yours is strong.",
       color:"var(--c-primary)",
       bg:"rgba(187,158,255,0.1)",
     },
     {
       icon:"code",
       title:"Web Development",
-      desc:"Your site is built with modern code — fast to load, easy to update, and ready to work on any device. We focus on quality so you don't have to worry about the technical side.",
+      desc:"Your site is built with modern code — fast to load, easy to update, and works perfectly on any device. No technical headaches on your end.",
       color:"var(--c-secondary)",
       bg:"rgba(0,207,252,0.1)",
     },
     {
       icon:"insights",
-      title:"UI/UX Optimisation",
-      desc:"We look at how visitors use your site and make it easier for them to find what they need. Better user experience means more enquiries, more sales, and happier customers.",
+      title:"UI/UX Improvements",
+      desc:"If your current site isn't bringing in enquiries, we can identify why and fix it. Small changes often lead to noticeably more leads.",
       color:"var(--c-tertiary)",
       bg:"rgba(170,255,220,0.1)",
     },
@@ -581,10 +589,10 @@ function Services() {
       <div className="svc-dot" style={{ position:"absolute", width:140, height:140, borderRadius:"50%", top:"50%", left:"45%", background:"rgba(170,255,220,0.08)", filter:"blur(50px)", pointerEvents:"none", "--dur":"8s", animationDelay:"4s" }} />
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 reveal-left">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What We Do</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Built to Perform</h2>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What I Do</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Services That Move the Needle</h2>
           <p className="mt-4 max-w-xl leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
-            Every website we build has one goal — to help your business succeed. We focus on what actually matters: clear design, fast performance, and real results.
+            Everything is focused on one thing — helping your business get more customers online.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
@@ -604,7 +612,7 @@ function Services() {
         <div className="text-center mt-14 reveal">
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
             className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Get Your Website
+            Start Your Project
           </button>
         </div>
       </div>
@@ -618,25 +626,25 @@ function Edge() {
     {
       icon:"speed",
       title:"Fast Delivery",
-      desc:"Most websites are ready in 1–3 weeks. We work in focused sprints and keep you updated throughout — so you always know where things stand.",
+      desc:"Most websites are ready in 1–3 weeks. You'll always know what's happening — no waiting in the dark.",
       color:"var(--c-secondary)",
     },
     {
       icon:"devices",
       title:"Works on Every Device",
-      desc:"Your customers browse on phones, tablets, and desktops. Every site we build looks great and works perfectly on all screen sizes, without compromise.",
+      desc:"Your site will look great and work perfectly on phones, tablets, and desktops — no exceptions.",
       color:"var(--c-primary)",
     },
     {
       icon:"brush",
       title:"Clean, Modern Design",
-      desc:"We design websites that look professional and feel easy to use. No clutter, no confusion — just a clear, attractive site that represents your brand well.",
+      desc:"Professional-looking websites that are easy to navigate. No clutter, no confusion.",
       color:"var(--c-tertiary)",
     },
     {
       icon:"track_changes",
-      title:"Business-Focused Approach",
-      desc:"We don't just make things look good. We think about your goals — more enquiries, more sales, more trust — and build your website with those outcomes in mind.",
+      title:"Business-Focused",
+      desc:"I think about your goals — more enquiries, more trust, more sales — and build with those in mind.",
       color:"var(--c-secondary)",
     },
   ];
@@ -656,12 +664,12 @@ function Edge() {
       ))}
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Why Choose Us</span>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Why Work With Me</span>
           <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-            What Sets Us Apart
+            Simple. Honest. Effective.
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            We're a small, dedicated studio that cares about doing good work. Here's what you can expect when you work with us.
+            I'm a solo web designer who cares about doing good work. Here's what you get when we work together.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-children">
@@ -690,21 +698,21 @@ function Portfolio() {
   const allProjects = [
     {
       img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
-      tags: [{ label:"Landing Page", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      title: "Demo Project — Landing Page",
-      description: "A concept landing page for a local services business. Designed to be clear, fast-loading, and easy to navigate on mobile. The layout focuses on building trust quickly and encouraging visitors to get in touch.",
+      tags: [{ label:"Landing Page", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Demo Landing Page for Local Business",
+      description: "A concept landing page built for a local services business. Designed to load fast, look trustworthy, and make it easy for visitors to get in touch. Everything you'd expect a professional site to do.",
     },
     {
       img: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80",
-      tags: [{ label:"Business Website", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      title: "Demo Project — Business Website",
-      description: "A multi-page concept website for a small professional services company. Includes a homepage, services overview, about section, and contact form. Built to look credible and work well on all devices.",
+      tags: [{ label:"Portfolio Website", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Sample Portfolio Website (Concept)",
+      description: "A portfolio concept for a freelance professional. Clean layout, focused on showcasing work clearly and encouraging visitors to reach out. Works beautifully across all screen sizes.",
     },
     {
       img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-      tags: [{ label:"Portfolio", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      title: "Demo Project — Creative Portfolio",
-      description: "A portfolio concept for a freelance creative professional. Simple, visually focused layout that showcases work clearly. Designed to be easy to update and fast to load.",
+      tags: [{ label:"Startup Website", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Startup Website Concept",
+      description: "A multi-page concept for a small startup — homepage, services, and contact. Built to look credible, load quickly, and work well for people browsing on their phones.",
     },
   ];
 
@@ -713,15 +721,15 @@ function Portfolio() {
       <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
       <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
-        <div className="text-center mb-12 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Our Work</span>
+        <div className="text-center mb-4 reveal">
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Sample Work</span>
           <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Demo Projects</h2>
           <p className="mt-3 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            These are concept projects that show the kind of work we do — the design style, layout quality, and attention to detail you can expect.
+            Sample work created to demonstrate design capabilities. These are concept projects — not client work.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
           {allProjects.map((p, i) => (
             <button key={p.title} onClick={() => setSelectedProject(p)}
               aria-label={`View ${p.title} details`}
@@ -746,11 +754,11 @@ function Portfolio() {
 
         <div className="text-center mt-14 reveal">
           <p className="text-sm mb-5" style={{ color:"var(--c-on-sv)" }}>
-            Ready to start your own project? We'd love to hear about it.
+            Want something like this for your business? Let's talk.
           </p>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
             className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Start Your Project
+            Get Your Website
           </button>
         </div>
       </div>
@@ -814,20 +822,20 @@ function PortfolioModal({ project, onClose }) {
 // ── PROCESS ────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
-    { num:"1", title:"Discovery",   desc:"We start by understanding your business, your goals, and who your customers are. This helps us make smart decisions throughout the project.", color:"var(--c-primary)",   text:"#1a003d" },
-    { num:"2", title:"Design",      desc:"We create mockups of your website so you can see exactly how it will look before any code is written. Your feedback shapes the final design.", color:"var(--c-secondary)", text:"#003a48" },
-    { num:"3", title:"Development", desc:"Once the design is approved, we build your site with clean, modern code. We focus on speed, mobile responsiveness, and ease of use.", color:"var(--c-tertiary)",  text:"#00654b" },
-    { num:"4", title:"Launch",      desc:"We test everything thoroughly, then launch your site. We're here to support you after go-live — so you can start with confidence.", gradient: true },
+    { num:"1", title:"Discovery",   desc:"We start with a quick chat about your business and what you need. No jargon — just a simple conversation to get on the same page.", color:"var(--c-primary)",   text:"#1a003d" },
+    { num:"2", title:"Design",      desc:"I'll show you what your website will look like before any code is written. You give feedback, and we get it right together.", color:"var(--c-secondary)", text:"#003a48" },
+    { num:"3", title:"Development", desc:"Once the design is signed off, I build your site. Clean code, fast loading, and fully mobile-responsive.", color:"var(--c-tertiary)",  text:"#00654b" },
+    { num:"4", title:"Launch",      desc:"We test everything, then go live. I'm here to support you after launch so you can get started with confidence.", gradient: true },
   ];
 
   return (
     <section id="process" style={{ background:"#000", padding:"8rem 1.5rem" }}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How We Work</span>
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How It Works</span>
           <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>A Simple, Clear Process</h2>
           <p className="mt-4 max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
-            We keep things straightforward so you always know what's happening and what comes next.
+            Four straightforward steps. No surprises, no confusion.
           </p>
         </div>
         <div className="relative">
@@ -863,6 +871,34 @@ function Process() {
   );
 }
 
+// ── PERSONAL INTRO (ANKIT) ─────────────────────────────────────────────────
+function PersonalIntro() {
+  return (
+    <section id="about" style={{ background:"var(--c-sc-low)", padding:"7rem 1.5rem" }}>
+      <div className="max-w-3xl mx-auto text-center reveal">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
+          style={{ background:"linear-gradient(135deg,var(--c-primary),var(--c-secondary))", fontSize:"1.75rem" }}
+          aria-hidden="true">
+          👋
+        </div>
+        <h2 className="font-headline font-black tracking-tighter mb-5" style={{ fontSize:"clamp(1.75rem,4vw,2.75rem)", color:"var(--c-on-surface)" }}>
+          Hi, I'm Ankit
+        </h2>
+        <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color:"var(--c-on-sv)", maxWidth:"600px", margin:"0 auto 1rem" }}>
+          I build modern, fast websites for businesses that want to grow online. I work directly with you — no middlemen, no agency markup — just honest work and clear communication.
+        </p>
+        <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)", maxWidth:"520px", margin:"0 auto 2rem" }}>
+          Whether you're starting from scratch or need to improve an existing site, I'm here to help you get it done properly.
+        </p>
+        <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
+          className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+          Let's Work Together
+        </button>
+      </div>
+    </section>
+  );
+}
+
 // ── CONTACT FORM ───────────────────────────────────────────────────────────
 function ContactSection() {
   const {
@@ -875,7 +911,7 @@ function ContactSection() {
   const btnLabel = {
     idle:    "Send My Project Brief",
     loading: "Sending…",
-    success: "✅ Received! We'll be in touch within 24 hours.",
+    success: "✅ Received! I'll get back to you within 24 hours.",
     error:   "❌ Something went wrong — please try again",
   }[status];
 
@@ -901,8 +937,11 @@ function ContactSection() {
             <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3rem)", color:"var(--c-on-surface)" }}>
               Let's Build Your Website
             </h2>
-            <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>
-              Tell us a little about your project and we'll get back to you within 24 hours. No pressure, no commitment — just a friendly chat about what you need.
+            <p className="text-sm mb-2" style={{ color:"var(--c-on-sv)" }}>
+              Tell me a little about your project and I'll get back to you within 24 hours.
+            </p>
+            <p className="text-sm font-semibold" style={{ color:"var(--c-secondary)" }}>
+              Currently accepting 2 new projects this month.
             </p>
           </div>
 
@@ -918,7 +957,7 @@ function ContactSection() {
               </div>
               <div>
                 <label htmlFor="contact-email" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Email Address *</label>
-                <input id="contact-email" type="email" placeholder="jane@yourcompany.com" required value={email}
+                <input id="contact-email" type="email" placeholder="you@yourbusiness.com" required value={email}
                   onChange={(e) => setEmail(e.target.value)} onBlur={() => touch("email")}
                   aria-invalid={!!(errors.email && touched.email)}
                   className="input-field w-full px-4 py-3 rounded-xl" style={errStyle("email")} />
@@ -928,8 +967,8 @@ function ContactSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="contact-company" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Company</label>
-                <input id="contact-company" type="text" placeholder="Your company (optional)" value={company}
+                <label htmlFor="contact-company" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Business Name</label>
+                <input id="contact-company" type="text" placeholder="Your business (optional)" value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   className="input-field w-full px-4 py-3 rounded-xl" />
               </div>
@@ -966,13 +1005,17 @@ function ContactSection() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Project Details *</label>
+              <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Tell Me About Your Project *</label>
               <textarea id="contact-message" rows={4} placeholder="What kind of website do you need? Who is it for? What do you want visitors to do?" required value={message}
                 onChange={(e) => setMessage(e.target.value)} onBlur={() => touch("message")}
                 aria-invalid={!!(errors.message && touched.message)}
                 className="input-field w-full px-4 py-3 rounded-xl resize-none" style={errStyle("message")} />
               <FieldErr field="message" />
             </div>
+
+            <p className="text-xs text-center" style={{ color:"var(--c-on-sv)" }}>
+              I'll get back to you within 24 hours. No spam, no pressure.
+            </p>
 
             <button id="contact-submit" type="submit" onClick={createRipple}
               disabled={status === "loading"}
@@ -1073,6 +1116,7 @@ export default function Home() {
         <Edge />
         <Portfolio />
         <Process />
+        <PersonalIntro />
         <ContactSection />
       </main>
       <Footer />
