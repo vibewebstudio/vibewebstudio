@@ -250,6 +250,10 @@ function SectionAnimStyles() {
     /* ── line accent ── */
     @keyframes line-grow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
     .line-accent{transform-origin:left;animation:line-grow 1s cubic-bezier(0.22,1,0.36,1) 0.5s both;}
+
+    /* ── team card member avatar pulse ── */
+    @keyframes member-glow{0%,100%{box-shadow:0 0 0 0 rgba(187,158,255,0.15)}50%{box-shadow:0 0 28px 4px rgba(187,158,255,0.3)}}
+    .member-avatar{animation:member-glow 4s ease-in-out infinite;}
   `;
   return <style dangerouslySetInnerHTML={{ __html: css }} />;
 }
@@ -460,6 +464,7 @@ function Navbar() {
     { href: "services",  label: "Services"  },
     { href: "portfolio", label: "Portfolio" },
     { href: "process",   label: "Process"   },
+    { href: "team",      label: "Team"      },
     { href: "contact",   label: "Contact"   },
   ];
 
@@ -514,7 +519,7 @@ function Navbar() {
         className="md:hidden glass overflow-hidden"
         style={{
           borderTop: mobileOpen ? "1px solid rgba(72,71,77,0.15)" : "none",
-          maxHeight: mobileOpen ? "360px" : "0px",
+          maxHeight: mobileOpen ? "400px" : "0px",
           opacity: mobileOpen ? 1 : 0,
           transform: mobileOpen ? "translateY(0)" : "translateY(-8px)",
           transition: "max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
@@ -538,7 +543,7 @@ function Navbar() {
         <button
           onClick={(e) => { createRipple(e); scrollTo("contact"); setMobile(false); }}
           style={{
-            transitionDelay: mobileOpen ? "220ms" : "0ms",
+            transitionDelay: mobileOpen ? "280ms" : "0ms",
             transform: mobileOpen ? "translateY(0)" : "translateY(10px)",
             opacity: mobileOpen ? 1 : 0,
             transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
@@ -558,16 +563,13 @@ function Hero() {
       className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden bg-shift"
       style={{ background: "var(--c-surface)" }}
     >
-      {/* Interactive particle canvas */}
       <PlexusCanvas />
 
-      {/* Layered gradient overlay */}
       <div aria-hidden="true" style={{
         position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
         background:"radial-gradient(ellipse 80% 60% at 50% 40%, rgba(187,158,255,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 80%, rgba(0,207,252,0.05) 0%, transparent 60%), radial-gradient(ellipse 40% 50% at 20% 20%, rgba(170,255,220,0.04) 0%, transparent 60%), linear-gradient(to bottom, transparent 60%, rgba(14,14,19,0.9) 100%)"
       }} />
 
-      {/* Floating orbs */}
       <div className="orb parallax-el" data-speed="-0.08" aria-hidden="true"
         style={{ width:600, height:600, top:"-10%", left:"-12%", background:"rgba(187,158,255,0.09)", animationDelay:"0s", zIndex:1 }} />
       <div className="orb parallax-el" data-speed="0.10" aria-hidden="true"
@@ -575,10 +577,8 @@ function Hero() {
       <div className="orb parallax-el" data-speed="-0.05" aria-hidden="true"
         style={{ width:300, height:300, top:"30%", right:"15%", background:"rgba(170,255,220,0.05)", animationDelay:"6s", zIndex:1 }} />
 
-      {/* Hero content */}
       <div className="relative max-w-5xl mx-auto text-center" style={{ zIndex:10 }}>
 
-        {/* Badge */}
         <div className="hero-badge inline-flex items-center gap-2.5 px-5 py-2 mb-10 rounded-full"
           style={{
             background:"rgba(25,25,31,0.8)",
@@ -596,25 +596,22 @@ function Hero() {
           </span>
         </div>
 
-        {/* Headline */}
         <h1 className="hero-h1 font-headline font-black tracking-tighter mb-6"
           style={{ fontSize:"clamp(2.8rem,8.5vw,6.5rem)", lineHeight:1.02, color:"var(--c-on-surface)" }}>
-          Get a Website That
+          We Design &amp; Build Websites
           <br />
-          <em className="neon-text not-italic"> Actually Gets You Customers</em>
+          <em className="neon-text not-italic"> That Get You More Customers</em>
         </h1>
 
-        {/* Subheadline */}
         <p className="hero-sub text-lg md:text-xl max-w-2xl mx-auto mb-3 font-light leading-relaxed"
           style={{ color:"var(--c-on-sv)" }}>
-          I build clean, fast, mobile-ready websites for small businesses and startups — so you can focus on running your business, not worrying about your online presence.
+          Clean, fast, mobile-ready websites for small businesses and startups — built by a designer and a developer working together.
         </p>
 
         <p className="hero-note text-sm mb-10 font-semibold" style={{ color:"var(--c-secondary)" }}>
           No commitment. Just ideas for your business.
         </p>
 
-        {/* CTAs */}
         <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <button
             onClick={(e) => { createRipple(e); scrollTo("contact"); }}
@@ -631,13 +628,11 @@ function Hero() {
           </button>
         </div>
 
-        {/* Availability line */}
         <p className="hero-avail text-xs font-bold uppercase tracking-[0.2em]"
           style={{ color:"rgba(170,255,220,0.75)" }}>
           ✦ Currently accepting 2 new projects this month
         </p>
 
-        {/* Social proof mini stats */}
         <div className="hero-avail flex items-center justify-center gap-8 mt-10 pt-10"
           style={{ borderTop:"1px solid rgba(72,71,77,0.15)" }}>
           {[
@@ -653,7 +648,6 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="scroll-indicator absolute bottom-8 left-1/2 flex flex-col items-center gap-2"
         style={{ zIndex:10 }} aria-hidden="true">
         <div style={{ width:1, height:48, background:"linear-gradient(to bottom, transparent, rgba(172,170,177,0.5))" }} />
@@ -669,7 +663,7 @@ function Services() {
     {
       icon:"web",
       title:"Website Design",
-      desc:"A design that looks professional and guides visitors toward contacting you, buying, or taking the next step. First impressions matter — we make sure yours is strong.",
+      desc:"A design that looks professional and guides visitors toward contacting you or taking the next step. First impressions matter — we make sure yours is strong.",
       color:"var(--c-primary)",
       bg:"rgba(187,158,255,0.12)",
       glow:"rgba(187,158,255,0.15)",
@@ -694,7 +688,6 @@ function Services() {
 
   return (
     <section id="services" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      {/* Ambient orbs */}
       <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:400, height:400, borderRadius:"50%", top:"0%", right:"-8%", background:"rgba(187,158,255,0.10)", filter:"blur(100px)", pointerEvents:"none", "--dur":"11s" }} />
       <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:280, height:280, borderRadius:"50%", bottom:"5%", left:"-5%", background:"rgba(0,207,252,0.08)", filter:"blur(80px)", pointerEvents:"none", "--dur":"13s", animationDelay:"2s" }} />
 
@@ -702,10 +695,10 @@ function Services() {
         <div className="mb-20 reveal-left">
           <div className="flex items-center gap-3 mb-4">
             <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} className="line-accent" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>What I Do</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>What We Do</span>
           </div>
           <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
-            Services That Move<br />the Needle
+            Websites That Help You<br />Get More Leads
           </h2>
           <p className="max-w-lg leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
             Everything focused on one thing — helping your business get more customers online.
@@ -720,7 +713,6 @@ function Services() {
               className={`premium-card service-card rounded-2xl p-8 reveal reveal-delay-${i + 1}`}
               style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.15)", cursor:"default" }}
             >
-              {/* Icon */}
               <div className="service-icon inline-flex items-center justify-center w-14 h-14 rounded-xl mb-7"
                 style={{
                   background: s.bg,
@@ -731,7 +723,6 @@ function Services() {
                 <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:"1.5rem" }}>{s.icon}</span>
               </div>
 
-              {/* Numbered accent */}
               <div className="mb-3" style={{ color:"rgba(72,71,77,0.5)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.15em" }}>
                 0{i + 1}
               </div>
@@ -739,7 +730,6 @@ function Services() {
               <h3 className="font-headline font-bold text-xl mb-3" style={{ color:"var(--c-on-surface)" }}>{s.title}</h3>
               <p className="leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>{s.desc}</p>
 
-              {/* Bottom arrow indicator */}
               <div className="mt-6 flex items-center gap-2 text-xs font-bold" style={{ color: s.color }}>
                 <span>Learn more</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
@@ -780,20 +770,19 @@ function Edge() {
     {
       icon:"brush",
       title:"Clean, Modern Design",
-      desc:"Professional-looking websites that are easy to navigate. No clutter, no confusion.",
+      desc:"Professional websites that are easy to navigate. No clutter, no confusion.",
       color:"var(--c-tertiary)",
     },
     {
       icon:"track_changes",
-      title:"Business-Focused",
-      desc:"I think about your goals — more enquiries, more trust, more sales — and build with those in mind.",
+      title:"Focused on Results",
+      desc:"We think about your goals — more enquiries, more trust, more sales — and build with those in mind.",
       color:"var(--c-secondary)",
     },
   ];
 
   return (
     <section id="why-us" style={{ background:"var(--c-surface)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      {/* Floating particles */}
       {[
         { l:"12%", t:"80%", c:"rgba(0,207,252,0.5)",    dur:"6s",  del:"0s"   },
         { l:"28%", t:"90%", c:"rgba(187,158,255,0.4)",  dur:"8s",  del:"1.2s" },
@@ -806,21 +795,20 @@ function Edge() {
           filter:"blur(1px)", boxShadow:`0 0 6px ${d.c}`, "--dur":d.dur, "--del":d.del }} />
       ))}
 
-      {/* Large background glow */}
       <div aria-hidden="true" style={{ position:"absolute", width:600, height:600, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(187,158,255,0.04) 0%, transparent 70%)", pointerEvents:"none" }} />
 
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="text-center mb-20 reveal">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-tertiary))", borderRadius:2 }} />
-            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-tertiary)" }}>Why Work With Me</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-tertiary)" }}>Why Work With Us</span>
             <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-tertiary),transparent)", borderRadius:2 }} />
           </div>
           <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
             Simple. Honest. Effective.
           </h2>
           <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            I'm a solo web designer who cares about doing good work. Here's what you get when we work together.
+            We're a two-person team that cares about doing good work. Here's what you get when we work together.
           </p>
         </div>
 
@@ -849,7 +837,6 @@ function Edge() {
           ))}
         </div>
 
-        {/* Trust badges */}
         <div className="mt-16 flex flex-wrap items-center justify-center gap-6 reveal">
           {[
             { icon:"verified", text:"No Hidden Fees" },
@@ -881,21 +868,20 @@ function Portfolio() {
     },
     {
       img: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80",
-      tags: [{ label:"Portfolio Website", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      title: "Sample Portfolio Website (Concept)",
-      description: "A portfolio concept for a freelance professional. Clean layout, focused on showcasing work clearly and encouraging visitors to reach out. Works beautifully across all screen sizes.",
+      tags: [{ label:"Business Website", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Sample Business Website (Concept)",
+      description: "A multi-page concept for a small business — homepage, services, and contact. Built to look credible, load quickly, and work well for people browsing on their phones.",
     },
     {
       img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
       tags: [{ label:"Startup Website", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Concept", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      title: "Startup Website Concept",
-      description: "A multi-page concept for a small startup — homepage, services, and contact. Built to look credible, load quickly, and work well for people browsing on their phones.",
+      title: "Startup Website Design",
+      description: "A website concept for an early-stage startup. Clean layout focused on showcasing the product and encouraging visitors to sign up or get in touch.",
     },
   ];
 
   return (
     <section id="portfolio" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      {/* Shimmer sweeps */}
       <div className="port-sweep" aria-hidden="true" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
       <div className="port-sweep" aria-hidden="true" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
 
@@ -909,9 +895,14 @@ function Portfolio() {
           <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
             Demo Projects
           </h2>
-          <p className="max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            Sample work created to demonstrate design capabilities. These are concept projects — not client work.
-          </p>
+          {/* Honest disclaimer */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl mb-2"
+            style={{ background:"rgba(187,158,255,0.08)", border:"1px solid rgba(187,158,255,0.2)" }}>
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:"1rem", color:"var(--c-primary)" }}>info</span>
+            <p className="text-xs font-semibold" style={{ color:"var(--c-on-sv)" }}>
+              These are sample projects created to showcase our design and development work — not live client sites.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14">
@@ -937,10 +928,8 @@ function Portfolio() {
               <img src={p.img} alt={p.title}
                 style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
 
-              {/* Overlay */}
               <div className="project-overlay" aria-hidden="true" />
 
-              {/* Info */}
               <div className="project-info">
                 <div className="flex flex-wrap gap-2 mb-2">
                   {p.tags.map((tag) => (
@@ -954,7 +943,6 @@ function Portfolio() {
                 <p className="text-xs mt-1.5 leading-relaxed" style={{ color:"rgba(255,255,255,0.7)" }}>Click to read more</p>
               </div>
 
-              {/* Play/expand icon */}
               <div style={{
                 position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)",
                 width:48, height:48, borderRadius:"50%",
@@ -984,7 +972,6 @@ function Portfolio() {
         </div>
       </div>
 
-      {/* Project Modal */}
       {selectedProject && (
         <div
           role="dialog" aria-modal="true" aria-label={selectedProject.title}
@@ -1029,9 +1016,9 @@ function Portfolio() {
 function Process() {
   const steps = [
     { num:"1", title:"Discovery",   desc:"We start with a quick chat about your business and what you need. No jargon — just a simple conversation to get on the same page.", color:"var(--c-primary)",   text:"#1a003d" },
-    { num:"2", title:"Design",      desc:"I'll show you what your website will look like before any code is written. You give feedback, and we get it right together.", color:"var(--c-secondary)", text:"#003a48" },
-    { num:"3", title:"Development", desc:"Once the design is signed off, I build your site. Clean code, fast loading, and fully mobile-responsive.", color:"var(--c-tertiary)",  text:"#00654b" },
-    { num:"4", title:"Launch",      desc:"We test everything, then go live. I'm here to support you after launch so you can get started with confidence.", gradient: true },
+    { num:"2", title:"Design",      desc:"Krish creates your website design before any code is written. You give feedback, and we get it right together.", color:"var(--c-secondary)", text:"#003a48" },
+    { num:"3", title:"Development", desc:"Once the design is approved, Ankit builds your site. Clean code, fast loading, and fully mobile-responsive.", color:"var(--c-tertiary)",  text:"#00654b" },
+    { num:"4", title:"Launch",      desc:"We test everything, then go live. We're here to support you after launch so you can get started with confidence.", gradient: true },
   ];
 
   return (
@@ -1052,7 +1039,6 @@ function Process() {
         </div>
 
         <div className="relative">
-          {/* Connection line */}
           <div className="absolute top-[3.5rem] left-0 right-0 h-px hidden md:block" aria-hidden="true"
             style={{ background:"linear-gradient(90deg,transparent,rgba(72,71,77,0.4),rgba(72,71,77,0.4),transparent)" }}>
             <div className="proc-travel" />
@@ -1090,70 +1076,130 @@ function Process() {
   );
 }
 
-// ── PERSONAL INTRO ─────────────────────────────────────────────────────────
-function PersonalIntro() {
+// ── TEAM SECTION ─────────────────────────────────────────────────────────────
+function TeamSection() {
+  const members = [
+    {
+      name: "Ankit",
+      role: "Developer",
+      emoji: "💻",
+      tagline: "I handle development — building fast, reliable websites.",
+      color: "var(--c-secondary)",
+      bg: "rgba(0,207,252,0.08)",
+      border: "rgba(0,207,252,0.2)",
+      glow: "rgba(0,207,252,0.25)",
+      skills: ["Next.js", "React", "Performance", "Mobile-Ready"],
+    },
+    {
+      name: "Krish",
+      role: "Designer",
+      emoji: "🎨",
+      tagline: "I handle design — creating clean, user-friendly interfaces.",
+      color: "var(--c-primary)",
+      bg: "rgba(187,158,255,0.08)",
+      border: "rgba(187,158,255,0.2)",
+      glow: "rgba(187,158,255,0.25)",
+      skills: ["UI/UX", "Figma", "Branding", "Visual Design"],
+    },
+  ];
+
   return (
-    <section id="about" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+    <section id="team" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
       {/* Background glow */}
-      <div aria-hidden="true" style={{ position:"absolute", width:500, height:500, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(187,158,255,0.05) 0%, transparent 70%)", pointerEvents:"none" }} />
+      <div aria-hidden="true" style={{ position:"absolute", width:600, height:600, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(187,158,255,0.05) 0%, transparent 70%)", pointerEvents:"none" }} />
 
-      <div className="max-w-3xl mx-auto text-center reveal" style={{ position:"relative", zIndex:1 }}>
+      <div className="max-w-5xl mx-auto" style={{ position:"relative", zIndex:1 }}>
 
-        {/* Avatar with spinning ring */}
-        <div className="inline-flex items-center justify-center mb-8" style={{ position:"relative" }}>
-          {/* Outer spinning conic ring */}
-          <div className="avatar-ring-spin" aria-hidden="true" style={{
-            width:80, height:80, borderRadius:"50%", padding:3,
-            background:"conic-gradient(from 0deg, var(--c-primary), var(--c-secondary), var(--c-tertiary), var(--c-primary))",
-            boxShadow:"0 0 30px rgba(187,158,255,0.3)",
-          }}>
-            <div style={{
-              width:"100%", height:"100%", borderRadius:"50%",
-              background:"var(--c-sc-low)",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              fontSize:"2rem",
-            }}>
-              👋
-            </div>
+        {/* Section Header */}
+        <div className="text-center mb-16 reveal">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-primary))", borderRadius:2 }} />
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>Meet the Team</span>
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} />
           </div>
+
+          {/* Human intro line */}
+          <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
+            Hi, we're <em className="neon-text not-italic">Ankit &amp; Krish</em>
+          </h2>
+          <p className="text-base max-w-xl mx-auto leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
+            We design and build modern websites for businesses — working together so you get great design <em>and</em> great code in one package.
+          </p>
         </div>
 
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-primary))", borderRadius:2 }} />
-          <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>About Me</span>
-          <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} />
-        </div>
+        {/* Member Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14">
+          {members.map((m, i) => (
+            <div key={m.name} {...tilt}
+              className={`premium-card rounded-3xl p-8 reveal reveal-delay-${i + 1}`}
+              style={{
+                background: m.bg,
+                border: `1px solid ${m.border}`,
+                cursor: "default",
+              }}
+            >
+              {/* Avatar */}
+              <div className="member-avatar inline-flex items-center justify-center mb-6 rounded-2xl"
+                style={{
+                  width: 72, height: 72,
+                  background: `linear-gradient(135deg, ${m.bg}, rgba(255,255,255,0.04))`,
+                  border: `1.5px solid ${m.border}`,
+                  fontSize: "2rem",
+                  boxShadow: `0 0 24px ${m.glow}`,
+                }}>
+                {m.emoji}
+              </div>
 
-        <h2 className="font-headline font-black tracking-tighter mb-6" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-          Hi, I'm <em className="neon-text not-italic">Ankit</em>
-        </h2>
+              {/* Role badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-4"
+                style={{ background:`rgba(255,255,255,0.06)`, border:`1px solid ${m.border}` }}>
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: m.color }}>{m.role}</span>
+              </div>
 
-        <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color:"var(--c-on-sv)", maxWidth:"600px", margin:"0 auto 1rem" }}>
-          I build modern, fast websites for businesses that want to grow online. I work directly with you — no middlemen, no agency markup — just honest work and clear communication.
-        </p>
-        <p className="text-sm leading-relaxed mb-10" style={{ color:"var(--c-on-sv)", maxWidth:"520px", margin:"0 auto 2.5rem" }}>
-          Whether you're starting from scratch or need to improve an existing site, I'm here to help you get it done properly.
-        </p>
+              <h3 className="font-headline font-black text-3xl mb-3" style={{ color:"var(--c-on-surface)" }}>{m.name}</h3>
+              <p className="text-sm leading-relaxed mb-6" style={{ color:"var(--c-on-sv)" }}>{m.tagline}</p>
 
-        {/* Credibility row */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
-          {[
-            { emoji:"🎯", text:"Results-Driven" },
-            { emoji:"⚡", text:"Fast Turnaround" },
-            { emoji:"💬", text:"Direct Communication" },
-          ].map((item) => (
-            <div key={item.text} className="trust-float flex items-center gap-2 px-4 py-2.5 rounded-full"
-              style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.2)" }}>
-              <span style={{ fontSize:"1rem" }}>{item.emoji}</span>
-              <span className="text-xs font-bold" style={{ color:"var(--c-on-surface)" }}>{item.text}</span>
+              {/* Skill tags */}
+              <div className="flex flex-wrap gap-2">
+                {m.skills.map((skill) => (
+                  <span key={skill} className="text-xs font-semibold px-3 py-1.5 rounded-full"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(72,71,77,0.25)",
+                      color: "var(--c-on-sv)",
+                    }}>
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
 
-        <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-          className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
-          Let's Work Together
-        </button>
+        {/* Positioning line */}
+        <div className="text-center reveal"
+          style={{ padding:"2rem 2rem", background:"rgba(255,255,255,0.03)", borderRadius:"1.5rem", border:"1px solid rgba(72,71,77,0.15)" }}>
+          <p className="font-headline font-bold text-lg mb-6" style={{ color:"var(--c-on-surface)" }}>
+            "We focus on simple, effective websites that actually help businesses grow."
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+            {[
+              { emoji:"🎯", text:"Results-Driven" },
+              { emoji:"⚡", text:"Fast Turnaround" },
+              { emoji:"💬", text:"Direct Communication" },
+            ].map((item) => (
+              <div key={item.text} className="trust-float flex items-center gap-2 px-4 py-2.5 rounded-full"
+                style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.2)" }}>
+                <span style={{ fontSize:"1rem" }}>{item.emoji}</span>
+                <span className="text-xs font-bold" style={{ color:"var(--c-on-surface)" }}>{item.text}</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
+            className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
+            Let's Work Together
+          </button>
+        </div>
       </div>
     </section>
   );
@@ -1171,7 +1217,7 @@ function ContactSection() {
   const btnLabel = {
     idle:    "Send My Project Brief",
     loading: "Sending…",
-    success: "✅ Received! I'll get back to you within 24 hours.",
+    success: "✅ Received! We'll get back to you within 24 hours.",
     error:   "❌ Something went wrong — please try again",
   }[status];
 
@@ -1186,18 +1232,15 @@ function ContactSection() {
 
   return (
     <section id="contact" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      {/* Ambient background */}
       <div aria-hidden="true" style={{ position:"absolute", width:700, height:700, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(0,207,252,0.04) 0%, transparent 65%)", pointerEvents:"none" }} />
 
       <div className="max-w-4xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="contact-card relative rounded-3xl overflow-hidden p-8 md:p-14 reveal"
           style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.2)" }}>
 
-          {/* Orbs inside card */}
           <div className="orb" aria-hidden="true" style={{ width:400, height:400, top:-120, right:-120, background:"rgba(187,158,255,0.08)" }} />
           <div className="orb" aria-hidden="true" style={{ width:280, height:280, bottom:-100, left:-80, background:"rgba(0,207,252,0.07)", animationDelay:"2s" }} />
 
-          {/* Header */}
           <div className="relative z-10 text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-secondary))", borderRadius:2 }} />
@@ -1208,20 +1251,19 @@ function ContactSection() {
               Let's Build Your Website
             </h2>
             <p className="text-sm mb-1" style={{ color:"var(--c-on-sv)" }}>
-              Tell me a little about your project and I'll get back to you within 24 hours.
+              Tell us a little about your project and we'll get back to you within 24 hours.
             </p>
             <p className="text-sm font-bold" style={{ color:"var(--c-secondary)" }}>
               ⚡ Currently accepting 2 new projects this month.
             </p>
           </div>
 
-          {/* Success state */}
           {status === "success" && (
             <div className="relative z-10 text-center py-12 mb-8 rounded-2xl"
               style={{ background:"rgba(170,255,220,0.08)", border:"1px solid rgba(170,255,220,0.25)" }}>
               <div style={{ fontSize:"2.5rem", marginBottom:"0.75rem" }}>✅</div>
               <h3 className="font-headline font-bold text-xl mb-2" style={{ color:"var(--c-tertiary)" }}>Message Received!</h3>
-              <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>I'll get back to you within 24 hours.</p>
+              <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>We'll get back to you within 24 hours.</p>
             </div>
           )}
 
@@ -1286,7 +1328,7 @@ function ContactSection() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Tell Me About Your Project *</label>
+              <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Tell Us About Your Project *</label>
               <textarea id="contact-message" rows={4} placeholder="What kind of website do you need? Who is it for? What do you want visitors to do?" required value={message}
                 onChange={(e) => setMessage(e.target.value)} onBlur={() => touch("message")}
                 aria-invalid={!!(errors.message && touched.message)}
@@ -1295,7 +1337,7 @@ function ContactSection() {
             </div>
 
             <p className="text-xs text-center" style={{ color:"var(--c-on-sv)" }}>
-              🔒 I'll get back to you within 24 hours. No spam, no pressure.
+              🔒 We'll get back to you within 24 hours. No spam, no pressure.
             </p>
 
             <button id="contact-submit" type="submit" onClick={createRipple}
@@ -1321,6 +1363,7 @@ function Footer() {
         { label:"Services",  onClick:() => scrollTo("services")  },
         { label:"Portfolio", onClick:() => scrollTo("portfolio") },
         { label:"Process",   onClick:() => scrollTo("process")   },
+        { label:"Team",      onClick:() => scrollTo("team")      },
         { label:"Contact",   onClick:() => scrollTo("contact")   },
       ],
     },
@@ -1397,7 +1440,7 @@ export default function Home() {
         <Edge />
         <Portfolio />
         <Process />
-        <PersonalIntro />
+        <TeamSection />
         <ContactSection />
       </main>
       <Footer />
