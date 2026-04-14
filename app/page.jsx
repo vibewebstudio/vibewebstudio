@@ -77,37 +77,6 @@ function useBackToTop() {
   }, []);
 }
 
-// ── ANIMATED COUNTER UP (#16) ──────────────────────────────────────────────
-function useCounters() {
-  useEffect(() => {
-    const counters = document.querySelectorAll("[data-count]");
-    if (!counters.length) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const el      = entry.target;
-        const target  = parseInt(el.dataset.count, 10);
-        const prefix  = el.dataset.prefix  || "";
-        const suffix  = el.dataset.suffix  || "";
-        const duration = 2000;
-        let start = null;
-        function step(ts) {
-          if (!start) start = ts;
-          const progress = Math.min((ts - start) / duration, 1);
-          const eased    = 1 - Math.pow(1 - progress, 3);
-          el.textContent = prefix + Math.floor(eased * target).toLocaleString("en-IN") + suffix;
-          if (progress < 1) requestAnimationFrame(step);
-          else el.textContent = prefix + target.toLocaleString("en-IN") + suffix;
-        }
-        requestAnimationFrame(step);
-        observer.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-    counters.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-}
-
 // ── BUTTON RIPPLE EFFECT (#12) ─────────────────────────────────────────────
 function createRipple(e) {
   const btn  = e.currentTarget;
@@ -150,7 +119,7 @@ const tilt = {
   onMouseLeave: (e) => { e.currentTarget.style.transform = ""; },
 };
 
-// ── Contact Form Hook (with inline validation) ─────────────────────────────
+// ── Contact Form Hook ──────────────────────────────────────────────────────
 function useContactForm() {
   const [status, setStatus]           = useState("idle");
   const [name, setName]               = useState("");
@@ -209,120 +178,6 @@ function useContactForm() {
   return { name, setName, email, setEmail, company, setCompany, projectType, setProjectType, budget, setBudget, message, setMessage, status, submit, errors, touched, touch };
 }
 
-// ── NAVBAR — animated mobile menu ─────────────────────────────────────────
-function Navbar() {
-  const [active, setActive]     = useState("services");
-  const [mobileOpen, setMobile] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const sections  = document.querySelectorAll("section[id]");
-    const observer  = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }),
-      { threshold: 0.4 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { observer.disconnect(); window.removeEventListener("scroll", onScroll); };
-  }, []);
-
-  const links = [
-    { href: "services",  label: "Services"  },
-    { href: "portfolio", label: "Portfolio" },
-    { href: "process",   label: "Process"   },
-    { href: "pricing",   label: "Pricing"   },
-  ];
-
-  return (
-    <nav
-      className={`fixed top-0 w-full z-50 glass${scrolled ? " nav-scrolled" : ""}`}
-      style={{ borderBottom: "1px solid rgba(72,71,77,0.1)", transition: "background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s" }}
-    >
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-3">
-        <a href="#" aria-label="VibeWebStudio home" style={{ display: "flex", alignItems: "center" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="VibeWebStudio"
-            style={{ height: 36, width: "auto", objectFit: "contain", borderRadius: "6px" }}
-          />
-        </a>
-
-        <div className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <button key={l.href} onClick={() => scrollTo(l.href)}
-              aria-label={`Navigate to ${l.label} section`}
-              className={`nav-link ${active === l.href ? "active" : ""}`}>
-              {l.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={(e) => { createRipple(e); scrollTo("contact"); }}
-            {...magnetic}
-            aria-label="Start your project"
-            className="btn-primary px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-wide hidden sm:block">
-            Start Your Project
-          </button>
-          <button onClick={() => setMobile(p => !p)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
-            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={mobileOpen}>
-            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
-              transform: mobileOpen ? "rotate(45deg) translate(3px,5px)" : "none" }} />
-            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
-              opacity: mobileOpen ? 0 : 1 }} />
-            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
-              transform: mobileOpen ? "rotate(-45deg) translate(3px,-5px)" : "none" }} />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu — smooth slide + stagger fade */}
-      <div
-        className="md:hidden glass overflow-hidden"
-        style={{
-          borderTop: mobileOpen ? "1px solid rgba(72,71,77,0.15)" : "none",
-          maxHeight: mobileOpen ? "360px" : "0px",
-          opacity: mobileOpen ? 1 : 0,
-          transform: mobileOpen ? "translateY(0)" : "translateY(-8px)",
-          transition: "max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
-          padding: mobileOpen ? "1rem 1.5rem 1.5rem" : "0 1.5rem",
-        }}
-      >
-        {links.map((l, i) => (
-          <button key={l.href} onClick={() => { scrollTo(l.href); setMobile(false); }}
-            aria-label={`Navigate to ${l.label} section`}
-            style={{
-              borderBottom:"1px solid rgba(72,71,77,0.1)",
-              transitionDelay: mobileOpen ? `${i * 55}ms` : "0ms",
-              transform: mobileOpen ? "translateX(0)" : "translateX(-14px)",
-              opacity: mobileOpen ? 1 : 0,
-              transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
-            }}
-            className="block w-full text-left py-3 nav-link text-base">
-            {l.label}
-          </button>
-        ))}
-        <button
-          onClick={(e) => { createRipple(e); scrollTo("contact"); setMobile(false); }}
-          style={{
-            transitionDelay: mobileOpen ? "220ms" : "0ms",
-            transform: mobileOpen ? "translateY(0)" : "translateY(10px)",
-            opacity: mobileOpen ? 1 : 0,
-            transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
-          }}
-          className="btn-primary w-full mt-4 py-3 rounded-full font-headline font-bold text-sm">
-          Start Your Project
-        </button>
-      </div>
-    </nav>
-  );
-}
-
 // ── SECTION ANIMATION KEYFRAMES ───────────────────────────────────────────
 function SectionAnimStyles() {
   const css = `
@@ -330,32 +185,23 @@ function SectionAnimStyles() {
     .svc-dot{animation:svc-float var(--dur,10s) ease-in-out infinite;}
     @keyframes port-shimmer{0%{transform:translateX(-150%) skewX(-18deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(260%) skewX(-18deg);opacity:0}}
     .port-sweep{animation:port-shimmer 7s ease-in-out infinite;animation-delay:var(--sd,0s);}
-    @keyframes grid-breathe{0%,100%{opacity:0.022}50%{opacity:0.055}}
-    .pricing-grid{animation:grid-breathe 5s ease-in-out infinite;}
-    @keyframes featured-glow{0%,100%{box-shadow:0 0 60px rgba(187,158,255,0.12),0 0 0 2px rgba(187,158,255,0.5)}50%{box-shadow:0 0 120px rgba(187,158,255,0.38),0 0 0 2px rgba(187,158,255,1)}}
-    .pricing-featured-anim{animation:featured-glow 3.5s ease-in-out infinite;}
     @keyframes edge-float{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:0.65}85%{opacity:0.3}100%{transform:translateY(-80px) scale(0.4);opacity:0}}
     .edge-dot{width:5px;height:5px;border-radius:50%;position:absolute;pointer-events:none;animation:edge-float var(--dur,6s) ease-in-out infinite;animation-delay:var(--del,0s);}
     @keyframes proc-travel{0%{left:2%;opacity:0}5%{opacity:1}95%{opacity:1}100%{left:98%;opacity:0}}
     .proc-travel{position:absolute;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:#bb9eff;box-shadow:0 0 10px #bb9eff,0 0 22px rgba(187,158,255,0.5);animation:proc-travel 4s linear infinite;pointer-events:none;}
-    @keyframes quote-float{0%,100%{transform:translateY(0) rotate(-6deg);opacity:0.05}50%{transform:translateY(-20px) rotate(-6deg);opacity:0.11}}
-    .quote-bg{position:absolute;font-size:16rem;line-height:1;pointer-events:none;user-select:none;font-family:'Space Grotesk',sans-serif;font-weight:900;color:var(--c-primary);animation:quote-float var(--qd,9s) ease-in-out infinite;}
     @keyframes contact-border{0%,100%{box-shadow:0 0 0 1px rgba(72,71,77,0.15)}50%{box-shadow:0 0 36px rgba(187,158,255,0.18),0 0 0 1px rgba(187,158,255,0.35)}}
     .contact-card{animation:contact-border 4.5s ease-in-out infinite;}
     @keyframes logo-shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
     .footer-logo{background:linear-gradient(90deg,var(--c-on-surface) 20%,var(--c-secondary) 45%,var(--c-primary) 60%,var(--c-on-surface) 80%);background-size:220% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:logo-shimmer 6s ease-in-out infinite;}
     @keyframes modal-in{from{opacity:0;transform:scale(0.95) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
     .modal-content{animation:modal-in 0.35s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
-    .faq-answer{overflow:hidden;transition:max-height 0.4s cubic-bezier(0.22,1,0.36,1),opacity 0.3s ease;}
-    @keyframes quote-card-pulse{0%,100%{border-color:rgba(0,207,252,0.2)}50%{border-color:rgba(0,207,252,0.5)}}
-    .quote-card-anim{animation:quote-card-pulse 3s ease-in-out infinite;}
     @keyframes field-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
     .field-shake{animation:field-shake 0.3s ease;}
   `;
   return <style dangerouslySetInnerHTML={{ __html: css }} />;
 }
 
-// ── PLEXUS NETWORK CANVAS — pauses when hero leaves viewport ──────────────
+// ── PLEXUS NETWORK CANVAS ─────────────────────────────────────────────────
 function PlexusCanvas() {
   const canvasRef = useRef(null);
   const mouseRef  = useRef({ x: -9999, y: -9999 });
@@ -539,6 +385,119 @@ function PlexusCanvas() {
   );
 }
 
+// ── NAVBAR ─────────────────────────────────────────────────────────────────
+function Navbar() {
+  const [active, setActive]     = useState("services");
+  const [mobileOpen, setMobile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const sections  = document.querySelectorAll("section[id]");
+    const observer  = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }),
+      { threshold: 0.4 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { observer.disconnect(); window.removeEventListener("scroll", onScroll); };
+  }, []);
+
+  const links = [
+    { href: "services",  label: "Services"  },
+    { href: "portfolio", label: "Portfolio" },
+    { href: "process",   label: "Process"   },
+    { href: "contact",   label: "Contact"   },
+  ];
+
+  return (
+    <nav
+      className={`fixed top-0 w-full z-50 glass${scrolled ? " nav-scrolled" : ""}`}
+      style={{ borderBottom: "1px solid rgba(72,71,77,0.1)", transition: "background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s" }}
+    >
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-3">
+        <a href="#" aria-label="VibeWebStudio home" style={{ display: "flex", alignItems: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="VibeWebStudio"
+            style={{ height: 36, width: "auto", objectFit: "contain", borderRadius: "6px" }}
+          />
+        </a>
+
+        <div className="hidden md:flex items-center gap-8">
+          {links.map((l) => (
+            <button key={l.href} onClick={() => scrollTo(l.href)}
+              aria-label={`Navigate to ${l.label} section`}
+              className={`nav-link ${active === l.href ? "active" : ""}`}>
+              {l.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={(e) => { createRipple(e); scrollTo("contact"); }}
+            {...magnetic}
+            aria-label="Start your project"
+            className="btn-primary px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-wide hidden sm:block">
+            Start Your Project
+          </button>
+          <button onClick={() => setMobile(p => !p)}
+            className="md:hidden flex flex-col gap-1.5 p-2"
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}>
+            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
+              transform: mobileOpen ? "rotate(45deg) translate(3px,5px)" : "none" }} />
+            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
+              opacity: mobileOpen ? 0 : 1 }} />
+            <span style={{ width:22, height:2, background:"var(--c-on-surface)", display:"block", transition:"all 0.3s",
+              transform: mobileOpen ? "rotate(-45deg) translate(3px,-5px)" : "none" }} />
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="md:hidden glass overflow-hidden"
+        style={{
+          borderTop: mobileOpen ? "1px solid rgba(72,71,77,0.15)" : "none",
+          maxHeight: mobileOpen ? "360px" : "0px",
+          opacity: mobileOpen ? 1 : 0,
+          transform: mobileOpen ? "translateY(0)" : "translateY(-8px)",
+          transition: "max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
+          padding: mobileOpen ? "1rem 1.5rem 1.5rem" : "0 1.5rem",
+        }}
+      >
+        {links.map((l, i) => (
+          <button key={l.href} onClick={() => { scrollTo(l.href); setMobile(false); }}
+            aria-label={`Navigate to ${l.label} section`}
+            style={{
+              borderBottom:"1px solid rgba(72,71,77,0.1)",
+              transitionDelay: mobileOpen ? `${i * 55}ms` : "0ms",
+              transform: mobileOpen ? "translateX(0)" : "translateX(-14px)",
+              opacity: mobileOpen ? 1 : 0,
+              transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
+            }}
+            className="block w-full text-left py-3 nav-link text-base">
+            {l.label}
+          </button>
+        ))}
+        <button
+          onClick={(e) => { createRipple(e); scrollTo("contact"); setMobile(false); }}
+          style={{
+            transitionDelay: mobileOpen ? "220ms" : "0ms",
+            transform: mobileOpen ? "translateY(0)" : "translateY(10px)",
+            opacity: mobileOpen ? 1 : 0,
+            transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s ease",
+          }}
+          className="btn-primary w-full mt-4 py-3 rounded-full font-headline font-bold text-sm">
+          Start Your Project
+        </button>
+      </div>
+    </nav>
+  );
+}
+
 // ── HERO ───────────────────────────────────────────────────────────────────
 function Hero() {
   return (
@@ -556,17 +515,16 @@ function Hero() {
           style={{ background:"var(--c-sc-high)", color:"var(--c-secondary)", border:"1px solid rgba(0,207,252,0.25)" }}>
           <span style={{ width:6,height:6,borderRadius:"50%",background:"var(--c-secondary)",display:"inline-block",
             boxShadow:"0 0 8px var(--c-secondary)",animation:"neon-flow 2s ease infinite" }} />
-          Premium Web Design &amp; Development Studio
+          Web Design &amp; Development Studio
         </span>
         <h1 className="reveal reveal-delay-1 font-headline font-black tracking-tighter mb-8 leading-[1.05]"
           style={{ fontSize:"clamp(2.8rem,8vw,6rem)", color:"var(--c-on-surface)" }}>
-          Websites That Win Clients,
-          <em className="neon-text not-italic"> Drive Revenue</em>,<br />
-          and Outrank Rivals
+          Websites That Grow
+          <em className="neon-text not-italic"> Your Business</em>
         </h1>
         <p className="reveal reveal-delay-2 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light leading-relaxed"
           style={{ color:"var(--c-on-sv)" }}>
-          We design and build high-performance websites that turn visitors into paying customers. Every pixel is crafted with purpose — every line of code built to scale.
+          We design and build clean, fast, mobile-ready websites that attract the right customers and help your business grow. No fluff — just results.
         </p>
         <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-5">
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
@@ -575,23 +533,10 @@ function Hero() {
             Start Your Project
           </button>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }}
-            aria-label="Book a free consultation"
+            aria-label="Contact us"
             className="btn-ghost w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Book a Free Consultation
+            Contact Us
           </button>
-        </div>
-        <div className="reveal reveal-delay-4 flex flex-wrap items-center justify-center gap-8 mt-16 pt-8"
-          style={{ borderTop:"1px solid rgba(72,71,77,0.15)" }}>
-          {[
-            { value:"50+", label:"Projects Delivered" },
-            { value:"100%", label:"Client Satisfaction" },
-            { value:"3×", label:"Avg. Conversion Lift" },
-          ].map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <div className="font-headline font-black text-2xl neon-text">{value}</div>
-              <div className="text-xs uppercase tracking-widest mt-1" style={{ color:"var(--c-on-sv)" }}>{label}</div>
-            </div>
-          ))}
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
@@ -606,9 +551,27 @@ function Hero() {
 // ── SERVICES ───────────────────────────────────────────────────────────────
 function Services() {
   const services = [
-    { icon:"web",      title:"Website Design",    desc:"We craft visually striking, strategically structured designs that capture attention and guide visitors toward conversion — turning first impressions into lasting business relationships.", color:"var(--c-primary)",   bg:"rgba(187,158,255,0.1)" },
-    { icon:"code",     title:"Web Development",   desc:"Clean, scalable code built on modern frameworks like Next.js and React. Your site loads fast, performs flawlessly, and is engineered to grow with your business.", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.1)"   },
-    { icon:"insights", title:"UI/UX Optimisation",desc:"We identify friction points in your user journey and fix them. Every interaction is refined to boost engagement, reduce drop-offs, and drive measurable business results.",    color:"var(--c-tertiary)",  bg:"rgba(170,255,220,0.1)" },
+    {
+      icon:"web",
+      title:"Website Design",
+      desc:"We create clean, modern designs that make a strong first impression and guide visitors toward taking action — whether that's calling you, buying, or filling out a form.",
+      color:"var(--c-primary)",
+      bg:"rgba(187,158,255,0.1)",
+    },
+    {
+      icon:"code",
+      title:"Web Development",
+      desc:"Your site is built with modern code — fast to load, easy to update, and ready to work on any device. We focus on quality so you don't have to worry about the technical side.",
+      color:"var(--c-secondary)",
+      bg:"rgba(0,207,252,0.1)",
+    },
+    {
+      icon:"insights",
+      title:"UI/UX Optimisation",
+      desc:"We look at how visitors use your site and make it easier for them to find what they need. Better user experience means more enquiries, more sales, and happier customers.",
+      color:"var(--c-tertiary)",
+      bg:"rgba(170,255,220,0.1)",
+    },
   ];
 
   return (
@@ -621,7 +584,7 @@ function Services() {
           <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What We Do</span>
           <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Built to Perform</h2>
           <p className="mt-4 max-w-xl leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
-            We don't just build websites — we build growth engines. Every service we offer is engineered to deliver measurable outcomes for your business.
+            Every website we build has one goal — to help your business succeed. We focus on what actually matters: clear design, fast performance, and real results.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
@@ -636,12 +599,170 @@ function Services() {
             </div>
           ))}
         </div>
+
+        {/* CTA between sections */}
+        <div className="text-center mt-14 reveal">
+          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
+            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+            Get Your Website
+          </button>
+        </div>
       </div>
     </section>
   );
 }
 
-// ── PORTFOLIO MODAL ─────────────────────────────────────────────────────────
+// ── WHY CHOOSE US (EDGE) ──────────────────────────────────────────────────
+function Edge() {
+  const points = [
+    {
+      icon:"speed",
+      title:"Fast Delivery",
+      desc:"Most websites are ready in 1–3 weeks. We work in focused sprints and keep you updated throughout — so you always know where things stand.",
+      color:"var(--c-secondary)",
+    },
+    {
+      icon:"devices",
+      title:"Works on Every Device",
+      desc:"Your customers browse on phones, tablets, and desktops. Every site we build looks great and works perfectly on all screen sizes, without compromise.",
+      color:"var(--c-primary)",
+    },
+    {
+      icon:"brush",
+      title:"Clean, Modern Design",
+      desc:"We design websites that look professional and feel easy to use. No clutter, no confusion — just a clear, attractive site that represents your brand well.",
+      color:"var(--c-tertiary)",
+    },
+    {
+      icon:"track_changes",
+      title:"Business-Focused Approach",
+      desc:"We don't just make things look good. We think about your goals — more enquiries, more sales, more trust — and build your website with those outcomes in mind.",
+      color:"var(--c-secondary)",
+    },
+  ];
+
+  return (
+    <section id="why-us" style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {[
+        { l:"12%", t:"80%", c:"rgba(0,207,252,0.5)",    dur:"6s",  del:"0s"   },
+        { l:"28%", t:"90%", c:"rgba(187,158,255,0.4)",  dur:"8s",  del:"1.2s" },
+        { l:"48%", t:"75%", c:"rgba(170,255,220,0.45)", dur:"5.5s",del:"2.4s" },
+        { l:"65%", t:"85%", c:"rgba(0,207,252,0.35)",   dur:"7s",  del:"0.6s" },
+        { l:"80%", t:"70%", c:"rgba(187,158,255,0.5)",  dur:"9s",  del:"3s"   },
+        { l:"92%", t:"88%", c:"rgba(170,255,220,0.4)",  dur:"6.5s",del:"1.8s" },
+      ].map((d, i) => (
+        <div key={i} aria-hidden="true" className="edge-dot" style={{ left:d.l, top:d.t, background:d.c,
+          filter:`blur(1px)`, boxShadow:`0 0 6px ${d.c}`, "--dur":d.dur, "--del":d.del }} />
+      ))}
+      <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
+        <div className="text-center mb-16 reveal">
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Why Choose Us</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
+            What Sets Us Apart
+          </h2>
+          <p className="mt-4 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
+            We're a small, dedicated studio that cares about doing good work. Here's what you can expect when you work with us.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-children">
+          {points.map((p, i) => (
+            <div key={p.title} className={`flex gap-5 group reveal reveal-delay-${i + 1}`}>
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                style={{ background:"var(--c-sc-highest)", color: p.color }}>
+                <span className="material-symbols-outlined" aria-hidden="true">{p.icon}</span>
+              </div>
+              <div>
+                <h4 className="font-headline font-bold text-lg mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
+                <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>{p.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── PORTFOLIO ──────────────────────────────────────────────────────────────
+function Portfolio() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const allProjects = [
+    {
+      img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
+      tags: [{ label:"Landing Page", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Demo Project — Landing Page",
+      description: "A concept landing page for a local services business. Designed to be clear, fast-loading, and easy to navigate on mobile. The layout focuses on building trust quickly and encouraging visitors to get in touch.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80",
+      tags: [{ label:"Business Website", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Demo Project — Business Website",
+      description: "A multi-page concept website for a small professional services company. Includes a homepage, services overview, about section, and contact form. Built to look credible and work well on all devices.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
+      tags: [{ label:"Portfolio", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Demo", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
+      title: "Demo Project — Creative Portfolio",
+      description: "A portfolio concept for a freelance creative professional. Simple, visually focused layout that showcases work clearly. Designed to be easy to update and fast to load.",
+    },
+  ];
+
+  return (
+    <section id="portfolio" style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
+      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
+      <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
+        <div className="text-center mb-12 reveal">
+          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Our Work</span>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Demo Projects</h2>
+          <p className="mt-3 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
+            These are concept projects that show the kind of work we do — the design style, layout quality, and attention to detail you can expect.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {allProjects.map((p, i) => (
+            <button key={p.title} onClick={() => setSelectedProject(p)}
+              aria-label={`View ${p.title} details`}
+              className={`project-card relative rounded-xl aspect-video text-left reveal reveal-delay-${i + 1}`}
+              style={{ background:"var(--c-sc-high)", display:"block", cursor:"pointer", width:"100%" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.img} alt={p.title} className="w-full h-full object-cover" />
+              <div className="project-overlay rounded-xl" />
+              <div className="project-info">
+                <div className="flex gap-2 mb-3 flex-wrap">
+                  {p.tags.map((t) => (
+                    <span key={t.label} className="px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest"
+                      style={{ background: t.bg, color: t.color }}>{t.label}</span>
+                  ))}
+                </div>
+                <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
+                <span className="text-xs" style={{ color:"var(--c-secondary)" }}>View Details →</span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="text-center mt-14 reveal">
+          <p className="text-sm mb-5" style={{ color:"var(--c-on-sv)" }}>
+            Ready to start your own project? We'd love to hear about it.
+          </p>
+          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
+            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+            Start Your Project
+          </button>
+        </div>
+      </div>
+
+      {selectedProject && (
+        <PortfolioModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
+    </section>
+  );
+}
+
+// ── PORTFOLIO MODAL ────────────────────────────────────────────────────────
 function PortfolioModal({ project, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
@@ -656,8 +777,8 @@ function PortfolioModal({ project, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       style={{ background:"rgba(0,0,0,0.85)", backdropFilter:"blur(12px)" }}
-      onClick={onClose} role="dialog" aria-modal="true" aria-label={`${project.title} project details`}>
-      <div className="modal-content relative w-full max-w-3xl rounded-2xl overflow-hidden"
+      onClick={onClose} role="dialog" aria-modal="true" aria-label={`${project.title} details`}>
+      <div className="modal-content relative w-full max-w-2xl rounded-2xl overflow-hidden"
         style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.3)", maxHeight:"90vh", overflowY:"auto" }}
         onClick={(e) => e.stopPropagation()}>
         <div className="relative aspect-video">
@@ -672,19 +793,11 @@ function PortfolioModal({ project, onClose }) {
                 style={{ background: t.bg, color: t.color }}>{t.label}</span>
             ))}
           </div>
-          <h3 className="font-headline font-black text-3xl mb-3" style={{ color:"var(--c-on-surface)" }}>{project.title}</h3>
+          <h3 className="font-headline font-black text-2xl mb-3" style={{ color:"var(--c-on-surface)" }}>{project.title}</h3>
           <p className="text-sm leading-relaxed mb-6" style={{ color:"var(--c-on-sv)" }}>{project.description}</p>
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            {project.stats.map((s) => (
-              <div key={s.label} className="text-center p-4 rounded-xl" style={{ background:"var(--c-sc)" }}>
-                <div className="font-headline font-black text-xl neon-text">{s.value}</div>
-                <div className="text-xs uppercase tracking-widest mt-1" style={{ color:"var(--c-on-sv)" }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
           <div className="flex gap-3">
             <button onClick={(e) => { createRipple(e); scrollTo("contact"); onClose(); }} {...magnetic}
-              className="btn-primary flex-1 py-4 rounded-xl font-headline font-bold">Start a Similar Project</button>
+              className="btn-primary flex-1 py-4 rounded-xl font-headline font-bold">Build Something Similar</button>
             <button onClick={onClose} className="btn-ghost px-6 py-4 rounded-xl font-headline font-bold">Close</button>
           </div>
         </div>
@@ -698,310 +811,13 @@ function PortfolioModal({ project, onClose }) {
   );
 }
 
-// ── PORTFOLIO — filter tabs + 6 projects + case study modal ───────────────
-function Portfolio() {
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [selectedProject, setSelectedProject] = useState(null);
-
-  const allProjects = [
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAeHGOhf2Xo8TrG5bxunHwnKbLVjROdmB26iVfOpg7S_rNL9RsZDTuRaVUu8Bw_V63QdmnhkzZEENChIGivXTlkvDeKOLbz7uA4PbQy8sAqa2IgAT9UFjzVKqpIf5Qah03lXbZ6CyDjV221CHflvdjHcUIdq4KR-cuZP4N915pEsxUZlqWlIiKoHfvN_yLuF9q1_fZpbSfy-RCCIwgnUbEfX8LJDIAXG21At12x9y64lW0Gv4ByrzNi-ilxd4VuaDrpNB2RPuOlLQ9f",
-      tags: [{ label:"React", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Next.js", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }],
-      category: "React",
-      title: "Nebula Fintech Platform",
-      description: "A high-performance fintech dashboard built for a Series A startup. Real-time data visualisation, enterprise-grade design system, and a seamless onboarding flow — together lifting their conversion rate from 1.2% to 4.8% within 90 days.",
-      stats: [{ value:"4.8%", label:"Conversion" }, { value:"98", label:"Perf Score" }, { value:"3 wks", label:"Delivered" }],
-    },
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDswEGNWQuteJR-LtDfOAhmUhLzEdPkzgoQDHxMyLdC_tzCbpldwsGNmXgEB-ZwuExaCuUEGwLLQqKG9DGjdQuNIUwRKASUHffKy9Zn8jqSKzYVMoupwxb6OXuX-7akgoVo73SEy5RH6YA7rwbO-4uwjsStqr8kBH74IplZTL5zvIdZZOqtM1WbUTxUL-05wcYAQV9lo5P36nC39zEq3IE",
-      tags: [{ label:"HTML", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"Web3", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
-      category: "Web3",
-      title: "Etheria NFT Hub",
-      description: "An immersive NFT marketplace built for a Web3 creative collective. Wallet integration, real-time live auctions, and a dark-fantasy aesthetic that set the brand apart — attracting 12,000 users in the first month and a Product Hunt feature.",
-      stats: [{ value:"12K", label:"Users" }, { value:"99", label:"Perf Score" }, { value:"4 wks", label:"Delivered" }],
-    },
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAeHGOhf2Xo8TrG5bxunHwnKbLVjROdmB26iVfOpg7S_rNL9RsZDTuRaVUu8Bw_V63QdmnhkzZEENChIGivXTlkvDeKOLbz7uA4PbQy8sAqa2IgAT9UFjzVKqpIf5Qah03lXbZ6CyDjV221CHflvdjHcUIdq4KR-cuZP4N915pEsxUZlqWlIiKoHfvN_yLuF9q1_fZpbSfy-RCCIwgnUbEfX8LJDIAXG21At12x9y64lW0Gv4ByrzNi-ilxd4VuaDrpNB2RPuOlLQ9f",
-      tags: [{ label:"E-Commerce", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"Next.js", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }],
-      category: "E-Commerce",
-      title: "LuxeCart E-Commerce",
-      description: "A premium D2C storefront built from scratch for a fashion retailer. Blazing-fast product pages, intelligent search, and a frictionless one-page checkout that reduced cart abandonment by 38% and doubled average order value.",
-      stats: [{ value:"2.1s", label:"Load Time" }, { value:"38%", label:"Less Abandonment" }, { value:"5 wks", label:"Delivered" }],
-    },
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDswEGNWQuteJR-LtDfOAhmUhLzEdPkzgoQDHxMyLdC_tzCbpldwsGNmXgEB-ZwuExaCuUEGwLLQqKG9DGjdQuNIUwRKASUHffKy9Zn8jqSKzYVMoupwxb6OXuX-7akgoVo73SEy5RH6YA7rwbO-4uwjsStqr8kBH74IplZTL5zvIdZZOqtM1WbUTxUL-05wcYAQV9lo5P36nC39zEq3IE",
-      tags: [{ label:"React", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }, { label:"UI/UX", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
-      category: "React",
-      title: "ZenithHR Web App",
-      description: "A full-featured HR management platform for a growing SaaS company. Custom onboarding flows, analytics dashboards, and an accessible design system engineered to scale across hundreds of enterprise teams without friction.",
-      stats: [{ value:"200+", label:"Active Users" }, { value:"97", label:"Perf Score" }, { value:"6 wks", label:"Delivered" }],
-    },
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAeHGOhf2Xo8TrG5bxunHwnKbLVjROdmB26iVfOpg7S_rNL9RsZDTuRaVUu8Bw_V63QdmnhkzZEENChIGivXTlkvDeKOLbz7uA4PbQy8sAqa2IgAT9UFjzVKqpIf5Qah03lXbZ6CyDjV221CHflvdjHcUIdq4KR-cuZP4N915pEsxUZlqWlIiKoHfvN_yLuF9q1_fZpbSfy-RCCIwgnUbEfX8LJDIAXG21At12x9y64lW0Gv4ByrzNi-ilxd4VuaDrpNB2RPuOlLQ9f",
-      tags: [{ label:"HTML", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"SEO", color:"var(--c-primary)", bg:"rgba(187,158,255,0.2)" }],
-      category: "Landing Page",
-      title: "PeakLocal Agency Site",
-      description: "A conversion-optimised multi-page website built for a regional agency seeking national reach. Advanced on-page SEO, structured data, and a powerful lead funnel — ranking on Google Page 1 within just six weeks of launch.",
-      stats: [{ value:"Page 1", label:"Google Rank" }, { value:"6 wks", label:"To Rank" }, { value:"2 wks", label:"Delivered" }],
-    },
-    {
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDswEGNWQuteJR-LtDfOAhmUhLzEdPkzgoQDHxMyLdC_tzCbpldwsGNmXgEB-ZwuExaCuUEGwLLQqKG9DGjdQuNIUwRKASUHffKy9Zn8jqSKzYVMoupwxb6OXuX-7akgoVo73SEy5RH6YA7rwbO-4uwjsStqr8kBH74IplZTL5zvIdZZOqtM1WbUTxUL-05wcYAQV9lo5P36nC39zEq3IE",
-      tags: [{ label:"E-Commerce", color:"var(--c-secondary)", bg:"rgba(0,207,252,0.2)" }, { label:"UI/UX", color:"var(--c-tertiary)", bg:"rgba(170,255,220,0.2)" }],
-      category: "E-Commerce",
-      title: "Bloom Wellness Store",
-      description: "A health and wellness D2C brand powered by a subscription model and loyalty programme. The editorial aesthetic paired with a frictionless checkout drove a 52% repeat purchase rate — and a 4.9-star customer rating — in the first quarter.",
-      stats: [{ value:"52%", label:"Repeat Purchases" }, { value:"4.9★", label:"Customer Rating" }, { value:"3 wks", label:"Delivered" }],
-    },
-  ];
-
-  const filters = ["All", "React", "E-Commerce", "Web3", "Landing Page"];
-  const filtered = activeFilter === "All" ? allProjects : allProjects.filter(p => p.category === activeFilter);
-
-  return (
-    <section id="portfolio" style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
-      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
-      <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 reveal">
-          <div>
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Our Work</span>
-            <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Results We've Delivered</h2>
-            <p className="mt-3 max-w-md text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-              Real projects, real outcomes. Explore how we've helped businesses grow through purposeful design and precision engineering.
-            </p>
-          </div>
-          <button onClick={() => scrollTo("contact")} aria-label="Start a project with us"
-            className="flex items-center gap-2 font-headline font-bold text-sm" style={{ color:"var(--c-primary)" }}>
-            Start Your Project <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:18 }}>arrow_forward</span>
-          </button>
-        </div>
-
-        {/* Filter tabs */}
-        <div className="flex flex-wrap gap-3 mb-10 reveal" role="group" aria-label="Filter projects by category">
-          {filters.map((f) => (
-            <button key={f} onClick={() => setActiveFilter(f)}
-              aria-pressed={activeFilter === f}
-              aria-label={`Filter projects: ${f}`}
-              className="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300"
-              style={{
-                border: activeFilter === f ? "1px solid var(--c-primary)" : "1px solid rgba(72,71,77,0.3)",
-                background: activeFilter === f ? "rgba(187,158,255,0.12)" : "transparent",
-                color: activeFilter === f ? "var(--c-primary)" : "var(--c-on-sv)",
-              }}>
-              {f}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filtered.map((p, i) => (
-            <button key={p.title} onClick={() => setSelectedProject(p)}
-              aria-label={`View ${p.title} case study`}
-              className={`project-card relative rounded-xl aspect-video text-left reveal reveal-delay-${(i % 4) + 1}`}
-              style={{ background:"var(--c-sc-high)", display:"block", cursor:"pointer", width:"100%" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p.img} alt={p.title} className="w-full h-full object-cover" />
-              <div className="project-overlay rounded-xl" />
-              <div className="project-info">
-                <div className="flex gap-2 mb-3 flex-wrap">
-                  {p.tags.map((t) => (
-                    <span key={t.label} className="px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest"
-                      style={{ background: t.bg, color: t.color }}>{t.label}</span>
-                  ))}
-                </div>
-                <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
-                <span className="text-xs" style={{ color:"var(--c-secondary)" }}>View Case Study →</span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {selectedProject && (
-        <PortfolioModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-      )}
-    </section>
-  );
-}
-
-// ── PRICING — with Custom Quote CTA card ───────────────────────────────────
-function Pricing() {
-  const plans = [
-    {
-      name: "Starter", price: "₹5,000", priceVal: 5000, sub: "Perfect for new businesses",
-      features: [
-        { text:"5 Custom Pages",    check: true  },
-        { text:"Basic SEO Setup",   check: true  },
-        { text:"Mobile Responsive", check: true  },
-        { text:"Custom Animations", check: false },
-      ],
-      featured: false, delay: 1,
-    },
-    {
-      name: "Growth", price: "₹7,000", priceVal: 7000, sub: "For businesses ready to scale",
-      features: [
-        { text:"12 Custom Pages",       check: true },
-        { text:"Advanced SEO & Schema", check: true },
-        { text:"Premium Animations",    check: true },
-        { text:"Content Strategy",      check: true },
-      ],
-      featured: true, delay: 2,
-    },
-    {
-      name: "Authority", price: "₹12,000", priceVal: 12000, sub: "For serious market leaders",
-      features: [
-        { text:"Unlimited Pages",         check: true },
-        { text:"Custom API Integrations", check: true },
-        { text:"Full Digital Brand Kit",  check: true },
-        { text:"1 Year Priority Support", check: true },
-      ],
-      featured: false, delay: 3,
-    },
-  ];
-
-  return (
-    <section id="pricing" style={{ background:"var(--c-sc-low)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="pricing-grid" style={{
-        position:"absolute", inset:0, pointerEvents:"none",
-        backgroundImage:"linear-gradient(rgba(187,158,255,0.12) 1px,transparent 1px),linear-gradient(90deg,rgba(187,158,255,0.12) 1px,transparent 1px)",
-        backgroundSize:"60px 60px",
-      }} />
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16 reveal-right">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Transparent Pricing</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Simple, Honest Pricing</h2>
-          <p className="mt-4 max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
-            No hidden fees. No surprises. Just straightforward pricing built around the value we deliver — choose the plan that fits your ambition.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch stagger-children mb-8">
-          {plans.map((plan) => (
-            <div key={plan.name} {...tilt}
-              className={`pricing-card${plan.featured ? " featured pricing-featured-anim" : ""} rounded-xl p-8 flex flex-col relative reveal reveal-delay-${plan.delay}`}>
-              {plan.featured && (
-                <div className="absolute top-0 right-6 -translate-y-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
-                  style={{ background:"var(--c-primary)", color:"#1a003d" }}>Most Popular</div>
-              )}
-              <div className="mb-8">
-                <h3 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>{plan.name}</h3>
-                <div className="font-headline font-black" data-count={plan.priceVal} data-prefix="₹"
-                  style={{ fontSize:"2.5rem", color:"var(--c-on-surface)" }}>{plan.price}</div>
-                <div className="text-sm mt-1" style={{ color:"var(--c-on-sv)" }}>{plan.sub}</div>
-              </div>
-              <ul className="space-y-4 mb-10 flex-grow">
-                {plan.features.map((f) => (
-                  <li key={f.text} className="flex items-center gap-3 text-sm"
-                    style={{ color: f.check ? "var(--c-on-surface)" : "var(--c-on-sv)" }}>
-                    <span className="material-symbols-outlined text-base" aria-hidden="true" style={{ color: f.check ? "var(--c-secondary)" : "var(--c-on-sv)" }}>
-                      {f.check ? "check" : "close"}
-                    </span>
-                    {f.text}
-                  </li>
-                ))}
-              </ul>
-              {plan.featured ? (
-                <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-                  aria-label={`Choose the ${plan.name} plan`}
-                  className="btn-primary w-full py-4 rounded-xl font-headline font-bold">Get Started</button>
-              ) : (
-                <button onClick={(e) => { createRipple(e); scrollTo("contact"); }}
-                  aria-label={`Choose the ${plan.name} plan`}
-                  className="btn-ghost w-full py-4 rounded-xl font-headline font-bold">Get Started</button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Custom Quote CTA card */}
-        <div className="quote-card-anim reveal rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6"
-          style={{ background:"var(--c-sc-highest)", border:"1px solid rgba(0,207,252,0.2)" }}>
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center"
-              style={{ background:"rgba(0,207,252,0.1)", color:"var(--c-secondary)" }}>
-              <span className="material-symbols-outlined text-2xl" aria-hidden="true">manage_accounts</span>
-            </div>
-            <div>
-              <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>Have a Bigger Vision?</h4>
-              <p className="text-sm leading-relaxed max-w-lg" style={{ color:"var(--c-on-sv)" }}>
-                Complex platform, unique requirements, or a tight timeline? We love a challenge. Tell us about it — we'll put together a custom proposal at no cost.
-              </p>
-            </div>
-          </div>
-          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            aria-label="Request a custom project quote"
-            className="btn-primary flex-shrink-0 px-8 py-4 rounded-full font-headline font-bold whitespace-nowrap">
-            Request a Custom Quote
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── EDGE ────────────────────────────────────────────────────────────────────
-function Edge() {
-  const points = [
-    { icon:"speed",   title:"Delivered on Time, Every Time", desc:"We operate in focused sprints, moving fast without cutting corners. You get a polished, production-ready website on schedule — no delays, no excuses.",       color:"var(--c-secondary)" },
-    { icon:"search",  title:"Built to Rank on Google",       desc:"SEO isn't an afterthought — it's engineered into every page from day one. We give your site the technical foundation to appear where your customers are searching.", color:"var(--c-primary)"   },
-    { icon:"devices", title:"Flawless on Every Device",      desc:"Your customers browse on phones, tablets, and desktops. We ensure your site looks and performs perfectly across all screen sizes, without compromise.",             color:"var(--c-tertiary)"  },
-  ];
-
-  return (
-    <section style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      {[
-        { l:"12%", t:"80%", c:"rgba(0,207,252,0.5)",    dur:"6s",  del:"0s"   },
-        { l:"28%", t:"90%", c:"rgba(187,158,255,0.4)",  dur:"8s",  del:"1.2s" },
-        { l:"48%", t:"75%", c:"rgba(170,255,220,0.45)", dur:"5.5s",del:"2.4s" },
-        { l:"65%", t:"85%", c:"rgba(0,207,252,0.35)",   dur:"7s",  del:"0.6s" },
-        { l:"80%", t:"70%", c:"rgba(187,158,255,0.5)",  dur:"9s",  del:"3s"   },
-        { l:"92%", t:"88%", c:"rgba(170,255,220,0.4)",  dur:"6.5s",del:"1.8s" },
-      ].map((d, i) => (
-        <div key={i} aria-hidden="true" className="edge-dot" style={{ left:d.l, top:d.t, background:d.c,
-          filter:`blur(1px)`, boxShadow:`0 0 6px ${d.c}`, "--dur":d.dur, "--del":d.del }} />
-      ))}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center" style={{ position:"relative", zIndex:1 }}>
-        <div className="reveal-left">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-4" style={{ color:"var(--c-tertiary)" }}>Why Choose Us</span>
-          <h2 className="font-headline font-black tracking-tighter mb-10" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-            The Standard We Hold Ourselves To
-          </h2>
-          <div className="space-y-8">
-            {points.map((p) => (
-              <div key={p.title} className="flex gap-5 group">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                  style={{ background:"var(--c-sc-highest)", color: p.color }}>
-                  <span className="material-symbols-outlined" aria-hidden="true">{p.icon}</span>
-                </div>
-                <div>
-                  <h4 className="font-headline font-bold text-lg mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
-                  <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>{p.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative reveal-right">
-          <div className="absolute -inset-4 rounded-full border animate-spin-slow" aria-hidden="true"
-            style={{ borderColor:"rgba(187,158,255,0.15)", borderStyle:"dashed" }} />
-          <div className="relative z-10 rounded-2xl overflow-hidden" style={{ boxShadow:"0 24px 80px rgba(0,0,0,0.5)" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNolCUZrrQPqCNvsixPD6sRERdyjRv68NA26iwvwIvex2MzXtOh4_RFexlblV-dvtQmLBDsizJ5A0QkkhIrp9hWQOJTEUpiFz8hzDAeOFBmOWGx-aDgvoEb1zMsGBxB_u6-TNZXo0PHPw-3L4FfUJasS2ou5SZQOtvGMTmtbSlNRGbehy2-QBW5rPTE_28ac23z8OFmd268Xa7hiXq19J3UGkaGtgjwDp0ESgI08Xm_xlwA4_hBKMj7NYCgJBTcabpNOwEFw0EqzPP"
-              alt="VibeWebStudio team collaborating on a client project" className="w-full h-full object-cover" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ── PROCESS ────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
-    { num:"1", title:"Discovery",   desc:"We start by understanding your business goals, target audience, and competitive landscape — so every decision we make is grounded in strategy.", color:"var(--c-primary)",   text:"#1a003d" },
-    { num:"2", title:"Design",      desc:"We design high-fidelity mockups that balance visual impact with intuitive user flows. You see exactly what you're getting before a single line of code is written.", color:"var(--c-secondary)", text:"#003a48" },
-    { num:"3", title:"Development", desc:"Your approved designs come to life in clean, modern code. We build for speed, accessibility, and future scalability — no bloat, no shortcuts.", color:"var(--c-tertiary)",  text:"#00654b" },
-    { num:"4", title:"Launch",      desc:"We deploy with precision, run performance audits, and stay by your side through go-live. Your site launches ready to impress — and ready to convert.", gradient: true },
+    { num:"1", title:"Discovery",   desc:"We start by understanding your business, your goals, and who your customers are. This helps us make smart decisions throughout the project.", color:"var(--c-primary)",   text:"#1a003d" },
+    { num:"2", title:"Design",      desc:"We create mockups of your website so you can see exactly how it will look before any code is written. Your feedback shapes the final design.", color:"var(--c-secondary)", text:"#003a48" },
+    { num:"3", title:"Development", desc:"Once the design is approved, we build your site with clean, modern code. We focus on speed, mobile responsiveness, and ease of use.", color:"var(--c-tertiary)",  text:"#00654b" },
+    { num:"4", title:"Launch",      desc:"We test everything thoroughly, then launch your site. We're here to support you after go-live — so you can start with confidence.", gradient: true },
   ];
 
   return (
@@ -1009,7 +825,10 @@ function Process() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 reveal">
           <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How We Work</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>A Process Built for Results</h2>
+          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>A Simple, Clear Process</h2>
+          <p className="mt-4 max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
+            We keep things straightforward so you always know what's happening and what comes next.
+          </p>
         </div>
         <div className="relative">
           <div className="absolute top-[3.5rem] left-0 right-0 h-px hidden md:block" aria-hidden="true"
@@ -1032,134 +851,11 @@ function Process() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
 
-// ── TESTIMONIALS ────────────────────────────────────────────────────────────
-function Testimonials() {
-  const testimonials = [
-    { quote:'"VibeWebStudio transformed our conversion rate from 1.2% to 4.8% in just three months. Their design instinct and technical precision are genuinely world-class."', name:"Alex Rivera",   role:"CEO, NexaSystems"    },
-    { quote:'"The architectural thinking they brought to our platform was unlike anything I\'d seen from an agency at this price point. Delivered ahead of schedule and beyond expectations."', name:"Sarah Chen",    role:"Founder, BloomDigital"},
-    { quote:'"They don\'t just build websites — they build revenue machines. Our leads tripled in 60 days. I\'d recommend VibeWebStudio to any brand that takes growth seriously."', name:"Marcus Thorne", role:"CTO, ZenithLogic"    },
-  ];
-
-  return (
-    <section style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="quote-bg" style={{ top:"-2rem", left:"-1rem", "--qd":"9s" }} aria-hidden="true">"</div>
-      <div className="quote-bg" style={{ bottom:"-4rem", right:"-1rem", "--qd":"12s", animationDirection:"reverse" }} aria-hidden="true">"</div>
-      <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
-        <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>Client Stories</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Trusted by Ambitious Founders</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
-          {testimonials.map((t, i) => (
-            <div key={t.name} {...tilt} className={`testimonial-card rounded-xl p-8 reveal reveal-delay-${i + 1}`}>
-              <div className="flex gap-0.5 mb-5" aria-label="5 out of 5 stars rating">
-                {[...Array(5)].map((_, j) => (
-                  <span key={j} className="material-symbols-outlined text-base icon-filled" aria-hidden="true" style={{ color:"var(--c-secondary)" }}>star</span>
-                ))}
-              </div>
-              <p className="text-base italic mb-8 leading-relaxed" style={{ color:"var(--c-on-surface)" }}>{t.quote}</p>
-              <div className="font-headline font-bold" style={{ color:"var(--c-on-surface)" }}>{t.name}</div>
-              <div className="text-xs uppercase tracking-widest mt-1" style={{ color:"var(--c-primary)" }}>{t.role}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── FAQ ─────────────────────────────────────────────────────────────────────
-function FAQ() {
-  const [open, setOpen] = useState(null);
-
-  const faqs = [
-    {
-      q: "How long does it take to build a website?",
-      a: "Timelines vary by scope. A landing page or Starter site typically takes 1–2 weeks. Growth and Authority projects run 3–5 weeks. After our discovery call, we'll give you a clear, committed timeline — and we always deliver on it.",
-    },
-    {
-      q: "How many revisions are included?",
-      a: "Every plan includes unlimited revisions during the design phase, plus two full rounds of revisions after development. We want you to be genuinely proud of the result — we never limit feedback or charge for reasonable changes.",
-    },
-    {
-      q: "Will my website be hosted? What about domain and maintenance?",
-      a: "We can set up hosting on Vercel, Netlify, or your preferred provider — typically free or very low cost for most projects. Optional monthly maintenance retainers start at ₹1,500/mo and cover updates, security, and performance monitoring.",
-    },
-    {
-      q: "Do you work with clients outside India?",
-      a: "Yes — we work with clients worldwide. All collaboration happens over WhatsApp, email, or video call. Payments are accepted in INR, USD, or EUR, and timezone differences are never an obstacle.",
-    },
-    {
-      q: "What do I need to provide to get started?",
-      a: "Simply fill in the contact form with your project type, budget, and a brief description of your goals. We'll schedule a quick discovery call, send a detailed proposal within 24 hours, and kick off as soon as you're ready. You'll need to supply brand assets (logo, colours) and any existing content — we can help with content creation too.",
-    },
-    {
-      q: "Can you redesign my existing website?",
-      a: "Absolutely — redesigns are among our most rewarding projects. We audit your existing site to identify conversion leaks, performance gaps, and UX problems, then rebuild it from the ground up on a modern stack — preserving your SEO equity throughout the process.",
-    },
-  ];
-
-  return (
-    <section id="faq" style={{ background:"var(--c-sc-low)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="svc-dot" style={{ position:"absolute", width:280, height:280, borderRadius:"50%", top:"10%", right:"-4%", background:"rgba(170,255,220,0.08)", filter:"blur(80px)", pointerEvents:"none", "--dur":"11s" }} />
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Common Questions</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
-            Everything You Need to Know
-          </h2>
-          <p className="mt-4 text-sm" style={{ color:"var(--c-on-sv)" }}>Clear, honest answers before you commit to anything.</p>
-        </div>
-
-        <div className="space-y-3">
-          {faqs.map((faq, i) => {
-            const isOpen = open === i;
-            return (
-              <div key={i} className="reveal"
-                style={{
-                  background: isOpen ? "var(--c-sc-high)" : "var(--c-sc)",
-                  border: isOpen ? "1px solid rgba(170,255,220,0.2)" : "1px solid rgba(72,71,77,0.15)",
-                  borderRadius: "0.875rem",
-                  transition: "background 0.3s, border-color 0.3s",
-                }}>
-                <button onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${i}`}
-                  className="w-full flex items-center justify-between gap-4 p-6 text-left">
-                  <span className="font-headline font-bold text-base" style={{ color: isOpen ? "var(--c-tertiary)" : "var(--c-on-surface)" }}>
-                    {faq.q}
-                  </span>
-                  <span aria-hidden="true" style={{
-                    flexShrink:0, width:28, height:28, borderRadius:"50%",
-                    border:"1px solid rgba(72,71,77,0.3)",
-                    display:"flex", alignItems:"center", justifyContent:"center",
-                    transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                    transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275)",
-                    color: isOpen ? "var(--c-tertiary)" : "var(--c-on-sv)",
-                  }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                  </span>
-                </button>
-                <div id={`faq-answer-${i}`} className="faq-answer"
-                  style={{ maxHeight: isOpen ? "300px" : "0px", opacity: isOpen ? 1 : 0 }}>
-                  <p className="px-6 pb-6 text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>{faq.a}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="text-center mt-10 reveal">
-          <p className="text-sm mb-4" style={{ color:"var(--c-on-sv)" }}>Still have questions? We're happy to help.</p>
+        <div className="text-center mt-14 reveal">
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            aria-label="Go to contact form to ask a question"
-            className="btn-primary px-8 py-3 rounded-full font-headline font-bold">
-            Ask Us Directly
+            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+            Start Your Project
           </button>
         </div>
       </div>
@@ -1167,7 +863,7 @@ function FAQ() {
   );
 }
 
-// ── CONTACT FORM — with inline validation ─────────────────────────────────
+// ── CONTACT FORM ───────────────────────────────────────────────────────────
 function ContactSection() {
   const {
     name, setName, email, setEmail,
@@ -1183,7 +879,7 @@ function ContactSection() {
     error:   "❌ Something went wrong — please try again",
   }[status];
 
-  const projectTypes = ["Landing Page", "Business Website", "E-Commerce", "Web App", "UI/UX Design", "Other"];
+  const projectTypes = ["Landing Page", "Business Website", "E-Commerce", "Portfolio", "Other"];
   const budgetRanges = ["₹5,000 – Starter", "₹7,000 – Growth", "₹12,000 – Authority", "Custom Budget"];
 
   const FieldErr = ({ field }) => touched[field] && errors[field]
@@ -1203,9 +899,11 @@ function ContactSection() {
           <div className="relative z-10 text-center mb-10">
             <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Get in Touch</span>
             <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3rem)", color:"var(--c-on-surface)" }}>
-              Let's Build Something Exceptional
+              Let's Build Your Website
             </h2>
-            <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>Tell us about your project and we'll send a tailored proposal within 24 hours — no commitment required.</p>
+            <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>
+              Tell us a little about your project and we'll get back to you within 24 hours. No pressure, no commitment — just a friendly chat about what you need.
+            </p>
           </div>
 
           <form className="relative z-10 space-y-5" onSubmit={submit} noValidate>
@@ -1269,7 +967,7 @@ function ContactSection() {
 
             <div>
               <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:"var(--c-on-sv)" }}>Project Details *</label>
-              <textarea id="contact-message" rows={4} placeholder="Tell us about your project — what you need, who it's for, and what success looks like for you." required value={message}
+              <textarea id="contact-message" rows={4} placeholder="What kind of website do you need? Who is it for? What do you want visitors to do?" required value={message}
                 onChange={(e) => setMessage(e.target.value)} onBlur={() => touch("message")}
                 aria-invalid={!!(errors.message && touched.message)}
                 className="input-field w-full px-4 py-3 rounded-xl resize-none" style={errStyle("message")} />
@@ -1293,9 +991,22 @@ function ContactSection() {
 // ── FOOTER ─────────────────────────────────────────────────────────────────
 function Footer() {
   const cols = [
-    { heading:"Company", links:[{label:"About",href:"#"},{label:"Portfolio",href:"#portfolio"},{label:"Pricing",href:"#pricing"},{label:"FAQ",href:"#faq"}] },
-    { heading:"Legal",   links:[{label:"Privacy Policy",href:"#"},{label:"Terms of Service",href:"#"}] },
-    { heading:"Connect", links:[{label:"Instagram",href:"https://www.instagram.com/vibewebstudio.in",target:"_blank"},{label:"LinkedIn",href:"#"},{label:"Twitter / X",href:"#"}] },
+    {
+      heading:"Navigate",
+      links:[
+        { label:"Services",  onClick:() => scrollTo("services")  },
+        { label:"Portfolio", onClick:() => scrollTo("portfolio") },
+        { label:"Process",   onClick:() => scrollTo("process")   },
+        { label:"Contact",   onClick:() => scrollTo("contact")   },
+      ],
+    },
+    {
+      heading:"Connect",
+      links:[
+        { label:"Instagram", href:"https://www.instagram.com/vibewebstudio.in", target:"_blank" },
+        { label:"WhatsApp",  href:"https://wa.me/919000000000",                 target:"_blank" },
+      ],
+    },
   ];
 
   return (
@@ -1309,22 +1020,31 @@ function Footer() {
             style={{ height: 56, width: "auto", objectFit: "contain", marginBottom: "0.75rem" }}
           />
           <p className="text-sm max-w-xs leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
-            © 2026 VibeWebStudio.<br />Designing the digital future — one high-performance website at a time.
+            © 2026 VibeWebStudio.<br />Clean websites for real businesses.
           </p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-2 gap-10">
           {cols.map((col) => (
             <div key={col.heading}>
               <h5 className="font-headline font-bold text-sm mb-4 uppercase tracking-widest" style={{ color:"var(--c-on-surface)" }}>{col.heading}</h5>
               <ul className="space-y-3 text-sm" style={{ color:"var(--c-on-sv)" }}>
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <a href={l.href} target={l.target || "_self"} rel={l.target === "_blank" ? "noopener noreferrer" : undefined}
-                      className="transition-colors duration-200" style={{ color:"inherit" }}
-                      onMouseOver={(e) => (e.target.style.color = "var(--c-tertiary)")}
-                      onMouseOut={(e)  => (e.target.style.color = "")}>
-                      {l.label}
-                    </a>
+                    {l.onClick ? (
+                      <button onClick={l.onClick}
+                        className="transition-colors duration-200" style={{ color:"inherit", background:"none", border:"none", cursor:"pointer", padding:0 }}
+                        onMouseOver={(e) => (e.target.style.color = "var(--c-tertiary)")}
+                        onMouseOut={(e)  => (e.target.style.color = "")}>
+                        {l.label}
+                      </button>
+                    ) : (
+                      <a href={l.href} target={l.target || "_self"} rel={l.target === "_blank" ? "noopener noreferrer" : undefined}
+                        className="transition-colors duration-200" style={{ color:"inherit" }}
+                        onMouseOver={(e) => (e.target.style.color = "var(--c-tertiary)")}
+                        onMouseOut={(e)  => (e.target.style.color = "")}>
+                        {l.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -1342,7 +1062,6 @@ export default function Home() {
   useCursor();
   useParallax();
   useBackToTop();
-  useCounters();
 
   return (
     <>
@@ -1351,12 +1070,9 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
-        <Portfolio />
-        <Pricing />
         <Edge />
+        <Portfolio />
         <Process />
-        <Testimonials />
-        <FAQ />
         <ContactSection />
       </main>
       <Footer />
