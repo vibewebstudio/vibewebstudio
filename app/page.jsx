@@ -7,7 +7,7 @@ function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-// ── SCROLL REVEAL FADE UP (#2) ─────────────────────────────────────────────
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────────
 function useReveal() {
   useEffect(() => {
     const els = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
@@ -20,14 +20,14 @@ function useReveal() {
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 }
 
-// ── CURSOR GLOW TRAIL (#11) ────────────────────────────────────────────────
+// ── CURSOR GLOW TRAIL ──────────────────────────────────────────────────────
 function useCursor() {
   useEffect(() => {
     const cursor = document.getElementById("vws-cursor");
@@ -50,7 +50,7 @@ function useCursor() {
   }, []);
 }
 
-// ── PARALLAX SCROLL (#9) ───────────────────────────────────────────────────
+// ── PARALLAX SCROLL ────────────────────────────────────────────────────────
 function useParallax() {
   useEffect(() => {
     const els = document.querySelectorAll(".parallax-el");
@@ -58,7 +58,7 @@ function useParallax() {
       const y = window.scrollY;
       els.forEach((el) => {
         const speed = parseFloat(el.dataset.speed || "0.12");
-        el.style.transform = `translateY(${y * speed}px) scale(${el.dataset.scale || 1}) translateY(${el.dataset.baseY || 0}px)`;
+        el.style.transform = `translateY(${y * speed}px)`;
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -66,7 +66,7 @@ function useParallax() {
   }, []);
 }
 
-// ── BACK TO TOP (#20) ──────────────────────────────────────────────────────
+// ── BACK TO TOP ────────────────────────────────────────────────────────────
 function useBackToTop() {
   useEffect(() => {
     const btn = document.getElementById("vws-back-top");
@@ -77,7 +77,7 @@ function useBackToTop() {
   }, []);
 }
 
-// ── BUTTON RIPPLE EFFECT (#12) ─────────────────────────────────────────────
+// ── BUTTON RIPPLE ──────────────────────────────────────────────────────────
 function createRipple(e) {
   const btn  = e.currentTarget;
   const rect = btn.getBoundingClientRect();
@@ -89,7 +89,7 @@ function createRipple(e) {
   setTimeout(() => r.remove(), 700);
 }
 
-// ── MAGNETIC BUTTON EFFECT (#4) ────────────────────────────────────────────
+// ── MAGNETIC BUTTON ────────────────────────────────────────────────────────
 const magnetic = {
   onMouseMove: (e) => {
     const btn  = e.currentTarget;
@@ -105,21 +105,21 @@ const magnetic = {
   },
 };
 
-// ── CARD TILT HOVER (#8) ───────────────────────────────────────────────────
+// ── CARD TILT ──────────────────────────────────────────────────────────────
 const tilt = {
   onMouseMove: (e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
     const x    = (e.clientX - rect.left) / rect.width;
     const y    = (e.clientY - rect.top)  / rect.height;
-    const tX   = (y - 0.5) * -10;
-    const tY   = (x - 0.5) *  10;
+    const tX   = (y - 0.5) * -8;
+    const tY   = (x - 0.5) *  8;
     card.style.transform = `perspective(800px) rotateX(${tX}deg) rotateY(${tY}deg) translateY(-6px)`;
   },
   onMouseLeave: (e) => { e.currentTarget.style.transform = ""; },
 };
 
-// ── Contact Form Hook ──────────────────────────────────────────────────────
+// ── CONTACT FORM HOOK ──────────────────────────────────────────────────────
 function useContactForm() {
   const [status, setStatus]           = useState("idle");
   const [name, setName]               = useState("");
@@ -178,30 +178,83 @@ function useContactForm() {
   return { name, setName, email, setEmail, company, setCompany, projectType, setProjectType, budget, setBudget, message, setMessage, status, submit, errors, touched, touch };
 }
 
-// ── SECTION ANIMATION KEYFRAMES ───────────────────────────────────────────
+// ── GLOBAL STYLES ──────────────────────────────────────────────────────────
 function SectionAnimStyles() {
   const css = `
+    /* ── hero entrance animations ── */
+    @keyframes hero-badge-in{from{opacity:0;transform:translateY(-16px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes hero-h1-in{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes hero-sub-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes hero-cta-in{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes scroll-bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+    .hero-badge{animation:hero-badge-in 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s both}
+    .hero-h1{animation:hero-h1-in 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s both}
+    .hero-sub{animation:hero-sub-in 0.8s cubic-bezier(0.22,1,0.36,1) 0.75s both}
+    .hero-note{animation:hero-sub-in 0.7s cubic-bezier(0.22,1,0.36,1) 0.9s both}
+    .hero-cta{animation:hero-cta-in 0.8s cubic-bezier(0.22,1,0.36,1) 1.05s both}
+    .hero-avail{animation:hero-sub-in 0.7s cubic-bezier(0.22,1,0.36,1) 1.25s both}
+
+    /* ── floating service dots ── */
     @keyframes svc-float{0%,100%{transform:translateY(0) scale(1);opacity:0.45}50%{transform:translateY(-22px) scale(1.08);opacity:0.75}}
     .svc-dot{animation:svc-float var(--dur,10s) ease-in-out infinite;}
+
+    /* ── shimmer sweep ── */
     @keyframes port-shimmer{0%{transform:translateX(-150%) skewX(-18deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(260%) skewX(-18deg);opacity:0}}
     .port-sweep{animation:port-shimmer 7s ease-in-out infinite;animation-delay:var(--sd,0s);}
+
+    /* ── edge particles ── */
     @keyframes edge-float{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:0.65}85%{opacity:0.3}100%{transform:translateY(-80px) scale(0.4);opacity:0}}
     .edge-dot{width:5px;height:5px;border-radius:50%;position:absolute;pointer-events:none;animation:edge-float var(--dur,6s) ease-in-out infinite;animation-delay:var(--del,0s);}
+
+    /* ── process traveler ── */
     @keyframes proc-travel{0%{left:2%;opacity:0}5%{opacity:1}95%{opacity:1}100%{left:98%;opacity:0}}
     .proc-travel{position:absolute;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:#bb9eff;box-shadow:0 0 10px #bb9eff,0 0 22px rgba(187,158,255,0.5);animation:proc-travel 4s linear infinite;pointer-events:none;}
+
+    /* ── contact card glow pulse ── */
     @keyframes contact-border{0%,100%{box-shadow:0 0 0 1px rgba(72,71,77,0.15)}50%{box-shadow:0 0 36px rgba(187,158,255,0.18),0 0 0 1px rgba(187,158,255,0.35)}}
     .contact-card{animation:contact-border 4.5s ease-in-out infinite;}
-    @keyframes logo-shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-    .footer-logo{background:linear-gradient(90deg,var(--c-on-surface) 20%,var(--c-secondary) 45%,var(--c-primary) 60%,var(--c-on-surface) 80%);background-size:220% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:logo-shimmer 6s ease-in-out infinite;}
+
+    /* ── modal ── */
     @keyframes modal-in{from{opacity:0;transform:scale(0.95) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
     .modal-content{animation:modal-in 0.35s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
+
+    /* ── form field shake ── */
     @keyframes field-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
     .field-shake{animation:field-shake 0.3s ease;}
+
+    /* ── CTA glow ring pulse ── */
+    @keyframes cta-ring-pulse{0%,100%{transform:scale(1);opacity:0}50%{transform:scale(1.18);opacity:0.4}}
+    .cta-ring::after{content:'';position:absolute;inset:-8px;border-radius:inherit;border:1px solid rgba(0,207,252,0.35);pointer-events:none;animation:cta-ring-pulse 2.8s ease-in-out infinite;}
+
+    /* ── stat counter shimmer ── */
+    @keyframes stat-shimmer{0%,100%{opacity:1}50%{opacity:0.75}}
+    .stat-num{animation:stat-shimmer 3s ease-in-out infinite;}
+
+    /* ── avatar ring ── */
+    @keyframes avatar-ring-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .avatar-ring-spin{animation:avatar-ring-spin 8s linear infinite;}
+
+    /* ── trust badge float ── */
+    @keyframes trust-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    .trust-float{animation:trust-float 4s ease-in-out infinite;}
+
+    /* ── scroll indicator ── */
+    .scroll-indicator{animation:scroll-bounce 2s ease-in-out infinite;}
+
+    /* ── card glow border on hover ── */
+    .premium-card{position:relative;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275),box-shadow 0.4s cubic-bezier(0.22,1,0.36,1),border-color 0.4s ease;}
+    .premium-card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(187,158,255,0.08),rgba(0,207,252,0.06));opacity:0;transition:opacity 0.4s ease;pointer-events:none;z-index:0;}
+    .premium-card:hover::before{opacity:1;}
+    .premium-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 0 1px rgba(0,207,252,0.15),0 0 40px rgba(0,207,252,0.06);}
+
+    /* ── line accent ── */
+    @keyframes line-grow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+    .line-accent{transform-origin:left;animation:line-grow 1s cubic-bezier(0.22,1,0.36,1) 0.5s both;}
   `;
   return <style dangerouslySetInnerHTML={{ __html: css }} />;
 }
 
-// ── PLEXUS NETWORK CANVAS ─────────────────────────────────────────────────
+// ── PLEXUS NETWORK CANVAS ──────────────────────────────────────────────────
 function PlexusCanvas() {
   const canvasRef = useRef(null);
   const mouseRef  = useRef({ x: -9999, y: -9999 });
@@ -283,7 +336,7 @@ function PlexusCanvas() {
       t++;
       const cw = canvas.width;
       const ch = canvas.height;
-      ctx.fillStyle = "rgba(14,14,19,0.32)";
+      ctx.fillStyle = "rgba(14,14,19,0.28)";
       ctx.fillRect(0, 0, cw, ch);
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
@@ -498,65 +551,119 @@ function Navbar() {
   );
 }
 
-// ── HERO ───────────────────────────────────────────────────────────────────
+// ── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 px-6 overflow-hidden"
-      style={{ background: "var(--c-surface)" }}>
+    <section
+      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden bg-shift"
+      style={{ background: "var(--c-surface)" }}
+    >
+      {/* Interactive particle canvas */}
       <PlexusCanvas />
-      <div aria-hidden="true" style={{ position:"absolute", inset:0, pointerEvents:"none",
-        background:"radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(14,14,19,0.75) 100%)" }} />
-      <div className="orb parallax-el" data-speed="-0.08"
-        style={{ width:480,height:480,top:"8%",left:"-8%",background:"rgba(187,158,255,0.10)",animationDelay:"0s",zIndex:1 }} />
-      <div className="orb parallax-el" data-speed="0.10"
-        style={{ width:400,height:400,bottom:"4%",right:"-6%",background:"rgba(0,207,252,0.08)",animationDelay:"3s",zIndex:1 }} />
-      <div className="relative max-w-5xl mx-auto text-center" style={{ zIndex: 10 }}>
-        <span className="reveal inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-xs font-bold tracking-[0.2em] uppercase rounded-full"
-          style={{ background:"var(--c-sc-high)", color:"var(--c-secondary)", border:"1px solid rgba(0,207,252,0.25)" }}>
-          <span style={{ width:6,height:6,borderRadius:"50%",background:"var(--c-secondary)",display:"inline-block",
-            boxShadow:"0 0 8px var(--c-secondary)",animation:"neon-flow 2s ease infinite" }} />
-          Web Design &amp; Development — India
-        </span>
-        <h1 className="reveal reveal-delay-1 font-headline font-black tracking-tighter mb-6 leading-[1.05]"
-          style={{ fontSize:"clamp(2.8rem,8vw,6rem)", color:"var(--c-on-surface)" }}>
+
+      {/* Layered gradient overlay */}
+      <div aria-hidden="true" style={{
+        position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
+        background:"radial-gradient(ellipse 80% 60% at 50% 40%, rgba(187,158,255,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 80%, rgba(0,207,252,0.05) 0%, transparent 60%), radial-gradient(ellipse 40% 50% at 20% 20%, rgba(170,255,220,0.04) 0%, transparent 60%), linear-gradient(to bottom, transparent 60%, rgba(14,14,19,0.9) 100%)"
+      }} />
+
+      {/* Floating orbs */}
+      <div className="orb parallax-el" data-speed="-0.08" aria-hidden="true"
+        style={{ width:600, height:600, top:"-10%", left:"-12%", background:"rgba(187,158,255,0.09)", animationDelay:"0s", zIndex:1 }} />
+      <div className="orb parallax-el" data-speed="0.10" aria-hidden="true"
+        style={{ width:500, height:500, bottom:"-5%", right:"-8%", background:"rgba(0,207,252,0.07)", animationDelay:"3s", zIndex:1 }} />
+      <div className="orb parallax-el" data-speed="-0.05" aria-hidden="true"
+        style={{ width:300, height:300, top:"30%", right:"15%", background:"rgba(170,255,220,0.05)", animationDelay:"6s", zIndex:1 }} />
+
+      {/* Hero content */}
+      <div className="relative max-w-5xl mx-auto text-center" style={{ zIndex:10 }}>
+
+        {/* Badge */}
+        <div className="hero-badge inline-flex items-center gap-2.5 px-5 py-2 mb-10 rounded-full"
+          style={{
+            background:"rgba(25,25,31,0.8)",
+            border:"1px solid rgba(0,207,252,0.3)",
+            backdropFilter:"blur(20px)",
+            boxShadow:"0 0 20px rgba(0,207,252,0.08)",
+          }}>
+          <span style={{
+            width:7, height:7, borderRadius:"50%", background:"var(--c-secondary)", display:"inline-block",
+            boxShadow:"0 0 10px var(--c-secondary), 0 0 20px rgba(0,207,252,0.5)",
+            animation:"neon-flow 2s ease infinite"
+          }} />
+          <span className="text-xs font-bold tracking-[0.18em] uppercase" style={{ color:"var(--c-secondary)" }}>
+            Web Design &amp; Development — India
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h1 className="hero-h1 font-headline font-black tracking-tighter mb-6"
+          style={{ fontSize:"clamp(2.8rem,8.5vw,6.5rem)", lineHeight:1.02, color:"var(--c-on-surface)" }}>
           Get a Website That
+          <br />
           <em className="neon-text not-italic"> Actually Gets You Customers</em>
         </h1>
-        <p className="reveal reveal-delay-2 text-lg md:text-xl max-w-2xl mx-auto mb-4 font-light leading-relaxed"
+
+        {/* Subheadline */}
+        <p className="hero-sub text-lg md:text-xl max-w-2xl mx-auto mb-3 font-light leading-relaxed"
           style={{ color:"var(--c-on-sv)" }}>
           I build clean, fast, mobile-ready websites for small businesses and startups — so you can focus on running your business, not worrying about your online presence.
         </p>
-        <p className="reveal reveal-delay-2 text-sm mb-10 font-medium"
-          style={{ color:"var(--c-secondary)" }}>
+
+        <p className="hero-note text-sm mb-10 font-semibold" style={{ color:"var(--c-secondary)" }}>
           No commitment. Just ideas for your business.
         </p>
-        <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-5">
-          <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
+
+        {/* CTAs */}
+        <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+          <button
+            onClick={(e) => { createRipple(e); scrollTo("contact"); }}
+            {...magnetic}
             aria-label="Get your website"
-            className="btn-primary w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
+            className="btn-primary cta-ring relative w-full sm:w-auto px-12 py-4 rounded-full font-headline font-bold text-lg">
             Get Your Website
           </button>
-          <button onClick={(e) => { createRipple(e); scrollTo("portfolio"); }}
+          <button
+            onClick={(e) => { createRipple(e); scrollTo("portfolio"); }}
             aria-label="View sample work"
-            className="btn-ghost w-full sm:w-auto px-10 py-4 rounded-full font-headline font-bold text-lg">
+            className="btn-ghost w-full sm:w-auto px-12 py-4 rounded-full font-headline font-bold text-lg">
             See Sample Work
           </button>
         </div>
-        <p className="reveal reveal-delay-4 mt-8 text-xs font-semibold uppercase tracking-widest"
-          style={{ color:"rgba(170,255,220,0.7)" }}>
+
+        {/* Availability line */}
+        <p className="hero-avail text-xs font-bold uppercase tracking-[0.2em]"
+          style={{ color:"rgba(170,255,220,0.75)" }}>
           ✦ Currently accepting 2 new projects this month
         </p>
+
+        {/* Social proof mini stats */}
+        <div className="hero-avail flex items-center justify-center gap-8 mt-10 pt-10"
+          style={{ borderTop:"1px solid rgba(72,71,77,0.15)" }}>
+          {[
+            { num:"48h", label:"Avg. Response" },
+            { num:"100%", label:"Mobile-Ready" },
+            { num:"1–3wk", label:"Delivery" },
+          ].map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="stat-num font-headline font-black text-2xl" style={{ color:"var(--c-on-surface)" }}>{s.num}</p>
+              <p className="text-xs uppercase tracking-widest mt-1" style={{ color:"var(--c-on-sv)" }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
-        style={{ opacity:0.35, zIndex:10 }} aria-hidden="true">
-        <div style={{ width:1,height:48,background:"linear-gradient(to bottom,transparent,var(--c-on-sv))" }} />
-        <div style={{ width:5,height:5,borderRadius:"50%",marginTop:4,background:"var(--c-on-sv)" }} />
+
+      {/* Scroll indicator */}
+      <div className="scroll-indicator absolute bottom-8 left-1/2 flex flex-col items-center gap-2"
+        style={{ zIndex:10 }} aria-hidden="true">
+        <div style={{ width:1, height:48, background:"linear-gradient(to bottom, transparent, rgba(172,170,177,0.5))" }} />
+        <div style={{ width:5, height:5, borderRadius:"50%", background:"var(--c-on-sv)", boxShadow:"0 0 8px rgba(172,170,177,0.5)" }} />
       </div>
     </section>
   );
 }
 
-// ── SERVICES ───────────────────────────────────────────────────────────────
+// ── SERVICES ────────────────────────────────────────────────────────────────
 function Services() {
   const services = [
     {
@@ -564,54 +671,89 @@ function Services() {
       title:"Website Design",
       desc:"A design that looks professional and guides visitors toward contacting you, buying, or taking the next step. First impressions matter — we make sure yours is strong.",
       color:"var(--c-primary)",
-      bg:"rgba(187,158,255,0.1)",
+      bg:"rgba(187,158,255,0.12)",
+      glow:"rgba(187,158,255,0.15)",
     },
     {
       icon:"code",
       title:"Web Development",
       desc:"Your site is built with modern code — fast to load, easy to update, and works perfectly on any device. No technical headaches on your end.",
       color:"var(--c-secondary)",
-      bg:"rgba(0,207,252,0.1)",
+      bg:"rgba(0,207,252,0.12)",
+      glow:"rgba(0,207,252,0.15)",
     },
     {
       icon:"insights",
       title:"UI/UX Improvements",
       desc:"If your current site isn't bringing in enquiries, we can identify why and fix it. Small changes often lead to noticeably more leads.",
       color:"var(--c-tertiary)",
-      bg:"rgba(170,255,220,0.1)",
+      bg:"rgba(170,255,220,0.12)",
+      glow:"rgba(170,255,220,0.15)",
     },
   ];
 
   return (
-    <section id="services" style={{ background:"var(--c-sc-low)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="svc-dot" style={{ position:"absolute", width:300, height:300, borderRadius:"50%", top:"5%", right:"-5%", background:"rgba(187,158,255,0.12)", filter:"blur(90px)", pointerEvents:"none", "--dur":"10s" }} />
-      <div className="svc-dot" style={{ position:"absolute", width:200, height:200, borderRadius:"50%", bottom:"10%", left:"-3%", background:"rgba(0,207,252,0.10)", filter:"blur(70px)", pointerEvents:"none", "--dur":"13s", animationDelay:"2s" }} />
-      <div className="svc-dot" style={{ position:"absolute", width:140, height:140, borderRadius:"50%", top:"50%", left:"45%", background:"rgba(170,255,220,0.08)", filter:"blur(50px)", pointerEvents:"none", "--dur":"8s", animationDelay:"4s" }} />
+    <section id="services" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {/* Ambient orbs */}
+      <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:400, height:400, borderRadius:"50%", top:"0%", right:"-8%", background:"rgba(187,158,255,0.10)", filter:"blur(100px)", pointerEvents:"none", "--dur":"11s" }} />
+      <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:280, height:280, borderRadius:"50%", bottom:"5%", left:"-5%", background:"rgba(0,207,252,0.08)", filter:"blur(80px)", pointerEvents:"none", "--dur":"13s", animationDelay:"2s" }} />
+
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16 reveal-left">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-primary)" }}>What I Do</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Services That Move the Needle</h2>
-          <p className="mt-4 max-w-xl leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
-            Everything is focused on one thing — helping your business get more customers online.
+        <div className="mb-20 reveal-left">
+          <div className="flex items-center gap-3 mb-4">
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} className="line-accent" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>What I Do</span>
+          </div>
+          <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
+            Services That Move<br />the Needle
+          </h2>
+          <p className="max-w-lg leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>
+            Everything focused on one thing — helping your business get more customers online.
           </p>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
           {services.map((s, i) => (
-            <div key={s.title} {...tilt} className={`service-card rounded-xl p-8 reveal reveal-delay-${i + 1}`}>
-              <div className="service-icon inline-flex items-center justify-center w-14 h-14 rounded-xl mb-6"
-                style={{ background: s.bg, color: s.color }}>
-                <span className="material-symbols-outlined" aria-hidden="true">{s.icon}</span>
+            <div
+              key={s.title}
+              {...tilt}
+              className={`premium-card service-card rounded-2xl p-8 reveal reveal-delay-${i + 1}`}
+              style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.15)", cursor:"default" }}
+            >
+              {/* Icon */}
+              <div className="service-icon inline-flex items-center justify-center w-14 h-14 rounded-xl mb-7"
+                style={{
+                  background: s.bg,
+                  color: s.color,
+                  boxShadow:`0 0 20px ${s.glow}`,
+                  border:`1px solid ${s.glow}`,
+                }}>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize:"1.5rem" }}>{s.icon}</span>
               </div>
-              <h3 className="font-headline font-bold text-2xl mb-3" style={{ color:"var(--c-on-surface)" }}>{s.title}</h3>
+
+              {/* Numbered accent */}
+              <div className="mb-3" style={{ color:"rgba(72,71,77,0.5)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.15em" }}>
+                0{i + 1}
+              </div>
+
+              <h3 className="font-headline font-bold text-xl mb-3" style={{ color:"var(--c-on-surface)" }}>{s.title}</h3>
               <p className="leading-relaxed text-sm" style={{ color:"var(--c-on-sv)" }}>{s.desc}</p>
+
+              {/* Bottom arrow indicator */}
+              <div className="mt-6 flex items-center gap-2 text-xs font-bold" style={{ color: s.color }}>
+                <span>Learn more</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* CTA between sections */}
-        <div className="text-center mt-14 reveal">
+        <div className="text-center mt-16 reveal">
+          <p className="text-sm mb-5 font-semibold" style={{ color:"var(--c-on-sv)" }}>
+            Ready to grow your business online?
+          </p>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+            className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
             Start Your Project
           </button>
         </div>
@@ -620,7 +762,7 @@ function Services() {
   );
 }
 
-// ── WHY CHOOSE US (EDGE) ──────────────────────────────────────────────────
+// ── WHY CHOOSE US ─────────────────────────────────────────────────────────
 function Edge() {
   const points = [
     {
@@ -650,7 +792,8 @@ function Edge() {
   ];
 
   return (
-    <section id="why-us" style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
+    <section id="why-us" style={{ background:"var(--c-surface)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {/* Floating particles */}
       {[
         { l:"12%", t:"80%", c:"rgba(0,207,252,0.5)",    dur:"6s",  del:"0s"   },
         { l:"28%", t:"90%", c:"rgba(187,158,255,0.4)",  dur:"8s",  del:"1.2s" },
@@ -660,29 +803,63 @@ function Edge() {
         { l:"92%", t:"88%", c:"rgba(170,255,220,0.4)",  dur:"6.5s",del:"1.8s" },
       ].map((d, i) => (
         <div key={i} aria-hidden="true" className="edge-dot" style={{ left:d.l, top:d.t, background:d.c,
-          filter:`blur(1px)`, boxShadow:`0 0 6px ${d.c}`, "--dur":d.dur, "--del":d.del }} />
+          filter:"blur(1px)", boxShadow:`0 0 6px ${d.c}`, "--dur":d.dur, "--del":d.del }} />
       ))}
+
+      {/* Large background glow */}
+      <div aria-hidden="true" style={{ position:"absolute", width:600, height:600, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(187,158,255,0.04) 0%, transparent 70%)", pointerEvents:"none" }} />
+
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
-        <div className="text-center mb-16 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>Why Work With Me</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
+        <div className="text-center mb-20 reveal">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-tertiary))", borderRadius:2 }} />
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-tertiary)" }}>Why Work With Me</span>
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-tertiary),transparent)", borderRadius:2 }} />
+          </div>
+          <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
             Simple. Honest. Effective.
           </h2>
-          <p className="mt-4 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
+          <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
             I'm a solo web designer who cares about doing good work. Here's what you get when we work together.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-children">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
           {points.map((p, i) => (
-            <div key={p.title} className={`flex gap-5 group reveal reveal-delay-${i + 1}`}>
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                style={{ background:"var(--c-sc-highest)", color: p.color }}>
+            <div
+              key={p.title}
+              className={`premium-card group flex gap-5 p-7 rounded-2xl reveal reveal-delay-${i + 1}`}
+              style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.15)" }}
+            >
+              <div className="flex-shrink-0 w-13 h-13 rounded-xl flex items-center justify-center transition-all duration-400 group-hover:scale-110 group-hover:shadow-lg"
+                style={{
+                  width:52, height:52,
+                  background:"var(--c-sc-highest)",
+                  color: p.color,
+                  boxShadow:`0 0 0 1px rgba(72,71,77,0.2)`,
+                  transition:"transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.4s ease",
+                }}>
                 <span className="material-symbols-outlined" aria-hidden="true">{p.icon}</span>
               </div>
               <div>
-                <h4 className="font-headline font-bold text-lg mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
+                <h4 className="font-headline font-bold text-lg mb-2" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
                 <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>{p.desc}</p>
               </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Trust badges */}
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-6 reveal">
+          {[
+            { icon:"verified", text:"No Hidden Fees" },
+            { icon:"support_agent", text:"Post-Launch Support" },
+            { icon:"lock", text:"Secure & Fast" },
+          ].map((b) => (
+            <div key={b.text} className="trust-float flex items-center gap-2 px-5 py-3 rounded-full"
+              style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.2)" }}>
+              <span className="material-symbols-outlined icon-filled text-base" aria-hidden="true" style={{ color:"var(--c-tertiary)", fontSize:"1.1rem" }}>{b.icon}</span>
+              <span className="text-xs font-bold" style={{ color:"var(--c-on-surface)" }}>{b.text}</span>
             </div>
           ))}
         </div>
@@ -691,7 +868,7 @@ function Edge() {
   );
 }
 
-// ── PORTFOLIO ──────────────────────────────────────────────────────────────
+// ── PORTFOLIO ────────────────────────────────────────────────────────────────
 function Portfolio() {
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -717,109 +894,138 @@ function Portfolio() {
   ];
 
   return (
-    <section id="portfolio" style={{ background:"var(--c-surface)", padding:"8rem 1.5rem", position:"relative", overflow:"hidden" }}>
-      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
-      <div className="port-sweep" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
+    <section id="portfolio" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {/* Shimmer sweeps */}
+      <div className="port-sweep" aria-hidden="true" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(187,158,255,0.04) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"0s" }} />
+      <div className="port-sweep" aria-hidden="true" style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,transparent 40%,rgba(0,207,252,0.03) 50%,transparent 60%)", pointerEvents:"none", zIndex:0, "--sd":"3.5s" }} />
+
       <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="text-center mb-4 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Sample Work</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>Demo Projects</h2>
-          <p className="mt-3 max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-secondary))", borderRadius:2 }} />
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-secondary)" }}>Sample Work</span>
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-secondary),transparent)", borderRadius:2 }} />
+          </div>
+          <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
+            Demo Projects
+          </h2>
+          <p className="max-w-xl mx-auto text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>
             Sample work created to demonstrate design capabilities. These are concept projects — not client work.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14">
           {allProjects.map((p, i) => (
-            <button key={p.title} onClick={() => setSelectedProject(p)}
+            <button
+              key={p.title}
+              onClick={() => setSelectedProject(p)}
               aria-label={`View ${p.title} details`}
-              className={`project-card relative rounded-xl aspect-video text-left reveal reveal-delay-${i + 1}`}
-              style={{ background:"var(--c-sc-high)", display:"block", cursor:"pointer", width:"100%" }}>
+              className={`project-card relative rounded-2xl overflow-hidden aspect-video text-left reveal reveal-delay-${i + 1}`}
+              style={{ background:"var(--c-sc-high)", display:"block", cursor:"pointer", width:"100%",
+                boxShadow:"0 8px 40px rgba(0,0,0,0.3)", border:"1px solid rgba(72,71,77,0.15)",
+                transition:"transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s ease" }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px) scale(1.01)";
+                e.currentTarget.style.boxShadow = "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,207,252,0.12)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "";
+                e.currentTarget.style.boxShadow = "0 8px 40px rgba(0,0,0,0.3)";
+              }}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p.img} alt={p.title} className="w-full h-full object-cover" />
-              <div className="project-overlay rounded-xl" />
+              <img src={p.img} alt={p.title}
+                style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
+
+              {/* Overlay */}
+              <div className="project-overlay" aria-hidden="true" />
+
+              {/* Info */}
               <div className="project-info">
-                <div className="flex gap-2 mb-3 flex-wrap">
-                  {p.tags.map((t) => (
-                    <span key={t.label} className="px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest"
-                      style={{ background: t.bg, color: t.color }}>{t.label}</span>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {p.tags.map((tag) => (
+                    <span key={tag.label} className="text-xs font-bold px-3 py-1 rounded-full"
+                      style={{ background: tag.bg, color: tag.color, backdropFilter:"blur(8px)" }}>
+                      {tag.label}
+                    </span>
                   ))}
                 </div>
-                <h4 className="font-headline font-bold text-xl mb-1" style={{ color:"var(--c-on-surface)" }}>{p.title}</h4>
-                <span className="text-xs" style={{ color:"var(--c-secondary)" }}>View Details →</span>
+                <h3 className="font-headline font-bold text-sm leading-snug" style={{ color:"#fff" }}>{p.title}</h3>
+                <p className="text-xs mt-1.5 leading-relaxed" style={{ color:"rgba(255,255,255,0.7)" }}>Click to read more</p>
               </div>
+
+              {/* Play/expand icon */}
+              <div style={{
+                position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)",
+                width:48, height:48, borderRadius:"50%",
+                background:"rgba(255,255,255,0.1)", backdropFilter:"blur(12px)",
+                border:"1px solid rgba(255,255,255,0.2)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                opacity:0, transition:"opacity 0.3s ease",
+              }}
+              className="portfolio-expand-icon"
+              aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </div>
+
+              <style>{`.project-card:hover .portfolio-expand-icon{opacity:1!important}`}</style>
             </button>
           ))}
         </div>
 
-        <div className="text-center mt-14 reveal">
-          <p className="text-sm mb-5" style={{ color:"var(--c-on-sv)" }}>
-            Want something like this for your business? Let's talk.
+        <div className="text-center mt-16 reveal">
+          <p className="text-sm mb-5 font-semibold" style={{ color:"var(--c-on-sv)" }}>
+            Interested in seeing what we can build for you?
           </p>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
-            Get Your Website
+            className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
+            Discuss Your Project
           </button>
         </div>
       </div>
 
+      {/* Project Modal */}
       {selectedProject && (
-        <PortfolioModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+        <div
+          role="dialog" aria-modal="true" aria-label={selectedProject.title}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background:"rgba(0,0,0,0.85)", backdropFilter:"blur(12px)" }}
+          onClick={(e) => { if (e.target === e.currentTarget) setSelectedProject(null); }}
+        >
+          <div className="modal-content relative max-w-2xl w-full rounded-3xl overflow-hidden"
+            style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.25)" }}>
+            <div style={{ aspectRatio:"16/9", overflow:"hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={selectedProject.img} alt={selectedProject.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+            </div>
+            <div className="p-8">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {selectedProject.tags.map((tag) => (
+                  <span key={tag.label} className="text-xs font-bold px-3 py-1 rounded-full"
+                    style={{ background: tag.bg, color: tag.color }}>{tag.label}</span>
+                ))}
+              </div>
+              <h3 className="font-headline font-bold text-2xl mb-3" style={{ color:"var(--c-on-surface)" }}>{selectedProject.title}</h3>
+              <p className="text-sm leading-relaxed mb-6" style={{ color:"var(--c-on-sv)" }}>{selectedProject.description}</p>
+              <button onClick={(e) => { createRipple(e); setSelectedProject(null); scrollTo("contact"); }}
+                className="btn-primary px-8 py-3 rounded-full font-headline font-bold text-sm">
+                Build Something Like This
+              </button>
+            </div>
+            <button onClick={() => setSelectedProject(null)}
+              aria-label="Close project details"
+              className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ background:"rgba(0,0,0,0.5)", color:"var(--c-on-surface)", border:"1px solid rgba(72,71,77,0.3)" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
       )}
     </section>
   );
 }
 
-// ── PORTFOLIO MODAL ────────────────────────────────────────────────────────
-function PortfolioModal({ project, onClose }) {
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background:"rgba(0,0,0,0.85)", backdropFilter:"blur(12px)" }}
-      onClick={onClose} role="dialog" aria-modal="true" aria-label={`${project.title} details`}>
-      <div className="modal-content relative w-full max-w-2xl rounded-2xl overflow-hidden"
-        style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.3)", maxHeight:"90vh", overflowY:"auto" }}
-        onClick={(e) => e.stopPropagation()}>
-        <div className="relative aspect-video">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={project.img} alt={project.title} className="w-full h-full object-cover" />
-          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)" }} />
-        </div>
-        <div className="p-8">
-          <div className="flex gap-2 mb-4 flex-wrap">
-            {project.tags.map((t) => (
-              <span key={t.label} className="px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest"
-                style={{ background: t.bg, color: t.color }}>{t.label}</span>
-            ))}
-          </div>
-          <h3 className="font-headline font-black text-2xl mb-3" style={{ color:"var(--c-on-surface)" }}>{project.title}</h3>
-          <p className="text-sm leading-relaxed mb-6" style={{ color:"var(--c-on-sv)" }}>{project.description}</p>
-          <div className="flex gap-3">
-            <button onClick={(e) => { createRipple(e); scrollTo("contact"); onClose(); }} {...magnetic}
-              className="btn-primary flex-1 py-4 rounded-xl font-headline font-bold">Build Something Similar</button>
-            <button onClick={onClose} className="btn-ghost px-6 py-4 rounded-xl font-headline font-bold">Close</button>
-          </div>
-        </div>
-        <button onClick={onClose} aria-label="Close modal"
-          className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ background:"rgba(0,0,0,0.5)", color:"var(--c-on-surface)", border:"1px solid rgba(72,71,77,0.3)" }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ── PROCESS ────────────────────────────────────────────────────────────────
+// ── PROCESS ──────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
     { num:"1", title:"Discovery",   desc:"We start with a quick chat about your business and what you need. No jargon — just a simple conversation to get on the same page.", color:"var(--c-primary)",   text:"#1a003d" },
@@ -829,40 +1035,53 @@ function Process() {
   ];
 
   return (
-    <section id="process" style={{ background:"#000", padding:"8rem 1.5rem" }}>
+    <section id="process" style={{ background:"#000", padding:"9rem 1.5rem" }}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 reveal">
-          <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-tertiary)" }}>How It Works</span>
-          <h2 className="font-headline font-black tracking-tighter" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>A Simple, Clear Process</h2>
-          <p className="mt-4 max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-tertiary))", borderRadius:2 }} />
+            <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-tertiary)" }}>How It Works</span>
+            <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-tertiary),transparent)", borderRadius:2 }} />
+          </div>
+          <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3.75rem)", color:"var(--c-on-surface)" }}>
+            A Simple, Clear Process
+          </h2>
+          <p className="max-w-lg mx-auto text-sm" style={{ color:"var(--c-on-sv)" }}>
             Four straightforward steps. No surprises, no confusion.
           </p>
         </div>
+
         <div className="relative">
+          {/* Connection line */}
           <div className="absolute top-[3.5rem] left-0 right-0 h-px hidden md:block" aria-hidden="true"
             style={{ background:"linear-gradient(90deg,transparent,rgba(72,71,77,0.4),rgba(72,71,77,0.4),transparent)" }}>
             <div className="proc-travel" />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10 stagger-children">
             {steps.map((s, i) => (
-              <div key={s.title} {...tilt} className={`step-card rounded-xl p-8 text-center reveal reveal-delay-${i + 1}`}>
-                <div className="w-12 h-12 rounded-full mx-auto mb-6 flex items-center justify-center font-headline font-black text-lg"
+              <div key={s.title} {...tilt} className={`step-card premium-card rounded-2xl p-8 text-center reveal reveal-delay-${i + 1}`}
+                style={{ background:"var(--c-surface)", border:"1px solid rgba(72,71,77,0.15)" }}>
+                <div className="w-14 h-14 rounded-full mx-auto mb-6 flex items-center justify-center font-headline font-black text-xl"
                   style={s.gradient
-                    ? { background:"linear-gradient(135deg,var(--c-primary),var(--c-secondary))", color:"#1a003d" }
-                    : { background: s.color, color: s.text }
+                    ? { background:"linear-gradient(135deg,var(--c-primary),var(--c-secondary))", color:"#1a003d", boxShadow:"0 0 24px rgba(187,158,255,0.3)" }
+                    : { background: s.color, color: s.text, boxShadow:`0 0 20px ${s.color}30` }
                   } aria-hidden="true">
                   {s.num}
                 </div>
-                <h4 className="font-headline font-bold text-lg mb-3" style={{ color:"var(--c-on-surface)" }}>{s.title}</h4>
+                <h4 className="font-headline font-bold text-xl mb-3" style={{ color:"var(--c-on-surface)" }}>{s.title}</h4>
                 <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)" }}>{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="text-center mt-14 reveal">
+        <div className="text-center mt-16 reveal">
+          <p className="text-sm mb-5 font-semibold" style={{ color:"var(--c-on-sv)" }}>
+            Ready to get started? It only takes a minute.
+          </p>
           <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-            className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+            className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
             Start Your Project
           </button>
         </div>
@@ -871,27 +1090,68 @@ function Process() {
   );
 }
 
-// ── PERSONAL INTRO (ANKIT) ─────────────────────────────────────────────────
+// ── PERSONAL INTRO ─────────────────────────────────────────────────────────
 function PersonalIntro() {
   return (
-    <section id="about" style={{ background:"var(--c-sc-low)", padding:"7rem 1.5rem" }}>
-      <div className="max-w-3xl mx-auto text-center reveal">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
-          style={{ background:"linear-gradient(135deg,var(--c-primary),var(--c-secondary))", fontSize:"1.75rem" }}
-          aria-hidden="true">
-          👋
+    <section id="about" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {/* Background glow */}
+      <div aria-hidden="true" style={{ position:"absolute", width:500, height:500, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(187,158,255,0.05) 0%, transparent 70%)", pointerEvents:"none" }} />
+
+      <div className="max-w-3xl mx-auto text-center reveal" style={{ position:"relative", zIndex:1 }}>
+
+        {/* Avatar with spinning ring */}
+        <div className="inline-flex items-center justify-center mb-8" style={{ position:"relative" }}>
+          {/* Outer spinning conic ring */}
+          <div className="avatar-ring-spin" aria-hidden="true" style={{
+            width:80, height:80, borderRadius:"50%", padding:3,
+            background:"conic-gradient(from 0deg, var(--c-primary), var(--c-secondary), var(--c-tertiary), var(--c-primary))",
+            boxShadow:"0 0 30px rgba(187,158,255,0.3)",
+          }}>
+            <div style={{
+              width:"100%", height:"100%", borderRadius:"50%",
+              background:"var(--c-sc-low)",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              fontSize:"2rem",
+            }}>
+              👋
+            </div>
+          </div>
         </div>
-        <h2 className="font-headline font-black tracking-tighter mb-5" style={{ fontSize:"clamp(1.75rem,4vw,2.75rem)", color:"var(--c-on-surface)" }}>
-          Hi, I'm Ankit
+
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-primary))", borderRadius:2 }} />
+          <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-primary)" }}>About Me</span>
+          <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} />
+        </div>
+
+        <h2 className="font-headline font-black tracking-tighter mb-6" style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"var(--c-on-surface)" }}>
+          Hi, I'm <em className="neon-text not-italic">Ankit</em>
         </h2>
+
         <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color:"var(--c-on-sv)", maxWidth:"600px", margin:"0 auto 1rem" }}>
           I build modern, fast websites for businesses that want to grow online. I work directly with you — no middlemen, no agency markup — just honest work and clear communication.
         </p>
-        <p className="text-sm leading-relaxed" style={{ color:"var(--c-on-sv)", maxWidth:"520px", margin:"0 auto 2rem" }}>
+        <p className="text-sm leading-relaxed mb-10" style={{ color:"var(--c-on-sv)", maxWidth:"520px", margin:"0 auto 2.5rem" }}>
           Whether you're starting from scratch or need to improve an existing site, I'm here to help you get it done properly.
         </p>
+
+        {/* Credibility row */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
+          {[
+            { emoji:"🎯", text:"Results-Driven" },
+            { emoji:"⚡", text:"Fast Turnaround" },
+            { emoji:"💬", text:"Direct Communication" },
+          ].map((item) => (
+            <div key={item.text} className="trust-float flex items-center gap-2 px-4 py-2.5 rounded-full"
+              style={{ background:"var(--c-sc-high)", border:"1px solid rgba(72,71,77,0.2)" }}>
+              <span style={{ fontSize:"1rem" }}>{item.emoji}</span>
+              <span className="text-xs font-bold" style={{ color:"var(--c-on-surface)" }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+
         <button onClick={(e) => { createRipple(e); scrollTo("contact"); }} {...magnetic}
-          className="btn-primary px-10 py-4 rounded-full font-headline font-bold text-lg">
+          className="btn-primary cta-ring relative px-12 py-4 rounded-full font-headline font-bold text-lg">
           Let's Work Together
         </button>
       </div>
@@ -899,7 +1159,7 @@ function PersonalIntro() {
   );
 }
 
-// ── CONTACT FORM ───────────────────────────────────────────────────────────
+// ── CONTACT FORM ─────────────────────────────────────────────────────────────
 function ContactSection() {
   const {
     name, setName, email, setEmail,
@@ -925,25 +1185,45 @@ function ContactSection() {
   const errStyle = (field) => touched[field] && errors[field] ? { borderColor:"rgba(255,107,107,0.5)" } : {};
 
   return (
-    <section id="contact" style={{ background:"var(--c-sc-low)", padding:"8rem 1.5rem" }}>
-      <div className="max-w-4xl mx-auto">
-        <div className="contact-card relative rounded-3xl overflow-hidden p-8 md:p-16 reveal"
-          style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.15)" }}>
-          <div className="orb" style={{ width:400,height:400,top:-100,right:-100,background:"rgba(187,158,255,0.1)" }} />
-          <div className="orb" style={{ width:240,height:240,bottom:-80,left:-60,background:"rgba(0,207,252,0.08)",animationDelay:"2s" }} />
+    <section id="contact" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+      {/* Ambient background */}
+      <div aria-hidden="true" style={{ position:"absolute", width:700, height:700, borderRadius:"50%", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"radial-gradient(circle, rgba(0,207,252,0.04) 0%, transparent 65%)", pointerEvents:"none" }} />
 
-          <div className="relative z-10 text-center mb-10">
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color:"var(--c-secondary)" }}>Get in Touch</span>
+      <div className="max-w-4xl mx-auto" style={{ position:"relative", zIndex:1 }}>
+        <div className="contact-card relative rounded-3xl overflow-hidden p-8 md:p-14 reveal"
+          style={{ background:"var(--c-sc)", border:"1px solid rgba(72,71,77,0.2)" }}>
+
+          {/* Orbs inside card */}
+          <div className="orb" aria-hidden="true" style={{ width:400, height:400, top:-120, right:-120, background:"rgba(187,158,255,0.08)" }} />
+          <div className="orb" aria-hidden="true" style={{ width:280, height:280, bottom:-100, left:-80, background:"rgba(0,207,252,0.07)", animationDelay:"2s" }} />
+
+          {/* Header */}
+          <div className="relative z-10 text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div style={{ height:2, width:32, background:"linear-gradient(90deg,transparent,var(--c-secondary))", borderRadius:2 }} />
+              <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color:"var(--c-secondary)" }}>Get in Touch</span>
+              <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-secondary),transparent)", borderRadius:2 }} />
+            </div>
             <h2 className="font-headline font-black tracking-tighter mb-4" style={{ fontSize:"clamp(2rem,5vw,3rem)", color:"var(--c-on-surface)" }}>
               Let's Build Your Website
             </h2>
-            <p className="text-sm mb-2" style={{ color:"var(--c-on-sv)" }}>
+            <p className="text-sm mb-1" style={{ color:"var(--c-on-sv)" }}>
               Tell me a little about your project and I'll get back to you within 24 hours.
             </p>
-            <p className="text-sm font-semibold" style={{ color:"var(--c-secondary)" }}>
-              Currently accepting 2 new projects this month.
+            <p className="text-sm font-bold" style={{ color:"var(--c-secondary)" }}>
+              ⚡ Currently accepting 2 new projects this month.
             </p>
           </div>
+
+          {/* Success state */}
+          {status === "success" && (
+            <div className="relative z-10 text-center py-12 mb-8 rounded-2xl"
+              style={{ background:"rgba(170,255,220,0.08)", border:"1px solid rgba(170,255,220,0.25)" }}>
+              <div style={{ fontSize:"2.5rem", marginBottom:"0.75rem" }}>✅</div>
+              <h3 className="font-headline font-bold text-xl mb-2" style={{ color:"var(--c-tertiary)" }}>Message Received!</h3>
+              <p className="text-sm" style={{ color:"var(--c-on-sv)" }}>I'll get back to you within 24 hours.</p>
+            </div>
+          )}
 
           <form className="relative z-10 space-y-5" onSubmit={submit} noValidate>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -997,6 +1277,7 @@ function ContactSection() {
                       background: budget === b ? "rgba(187,158,255,0.15)" : "transparent",
                       color: budget === b ? "var(--c-primary)" : "var(--c-on-sv)",
                       position:"relative", overflow:"hidden",
+                      boxShadow: budget === b ? "0 0 12px rgba(187,158,255,0.15)" : "none",
                     }}>
                     {b}
                   </button>
@@ -1014,14 +1295,14 @@ function ContactSection() {
             </div>
 
             <p className="text-xs text-center" style={{ color:"var(--c-on-sv)" }}>
-              I'll get back to you within 24 hours. No spam, no pressure.
+              🔒 I'll get back to you within 24 hours. No spam, no pressure.
             </p>
 
             <button id="contact-submit" type="submit" onClick={createRipple}
               disabled={status === "loading"}
               {...(status !== "loading" ? magnetic : {})}
               aria-live="polite"
-              className="btn-primary w-full py-5 rounded-full font-headline font-bold text-lg disabled:opacity-60">
+              className="btn-primary cta-ring relative w-full py-5 rounded-full font-headline font-bold text-lg disabled:opacity-60">
               {btnLabel}
             </button>
           </form>
@@ -1031,7 +1312,7 @@ function ContactSection() {
   );
 }
 
-// ── FOOTER ─────────────────────────────────────────────────────────────────
+// ── FOOTER ──────────────────────────────────────────────────────────────────
 function Footer() {
   const cols = [
     {
@@ -1099,7 +1380,7 @@ function Footer() {
   );
 }
 
-// ── PAGE ───────────────────────────────────────────────────────────────────
+// ── PAGE ─────────────────────────────────────────────────────────────────────
 export default function Home() {
   useReveal();
   useCursor();
