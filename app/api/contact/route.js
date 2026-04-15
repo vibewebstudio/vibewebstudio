@@ -21,19 +21,26 @@ export async function POST(request) {
     return Response.json({ error: "Enter a valid email address." }, { status: 400 });
   }
 
-  // ── Send email via Gmail SMTP ──────────────────────────────────────────────
   try {
+    // ── DEBUG (VERY IMPORTANT) ─────────────────────────────
+    console.log("ENV CHECK:");
+    console.log("USER:", process.env.GMAIL_USER);
+    console.log("PASS:", process.env.GMAIL_PASS ? "EXISTS" : "MISSING");
+
+    // ── FIXED SMTP FOR VERCEL ─────────────────────────────
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.GMAIL_USER,  // your Gmail address, e.g. hello@vibewebstudio.in
-        pass: process.env.GMAIL_PASS,  // Gmail App Password (not your login password)
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
     await transporter.sendMail({
-      from:    `"VibeWebStudio Contact" <${process.env.GMAIL_USER}>`,
-      to:      process.env.GMAIL_USER,   // sends to yourself
+      from: `"VibeWebStudio Contact" <${process.env.GMAIL_USER}>`,
+      to: process.env.STUDIO_EMAIL, // ✅ better practice
       replyTo: email,
       subject: `New Enquiry from ${name}${company ? ` — ${company}` : ""}`,
       html: `
@@ -55,6 +62,7 @@ export async function POST(request) {
 
     console.log(`[contact] Email sent from: ${email}`);
     return Response.json({ success: true });
+
   } catch (err) {
     console.error("[contact] Email send error:", err?.message ?? err);
     return Response.json(
