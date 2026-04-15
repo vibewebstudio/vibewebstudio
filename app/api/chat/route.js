@@ -1,58 +1,92 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { chatLimiter, getIP } from "@/lib/ratelimit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const SYSTEM_PROMPT = `
-You are "Vibe" — the AI assistant for VibeWebStudio, a next-gen digital agency that builds
-high-performance websites, web apps, and immersive digital experiences.
+const SYSTEM_PROMPT = `You are Vibe, the friendly AI assistant for VibeWebStudio — a premium web design and development studio.
 
-## Personality
-- Friendly, confident, creative — like a senior team member chatting with a potential client
-- Keep responses concise (2-4 sentences max unless asked for detail)
-- Use occasional emojis to keep it warm, but don't overdo it
-- Never say "I don't know" — redirect to booking a discovery call instead
+Your role is to help potential clients learn about VibeWebStudio's services, pricing, timelines, and process.
 
-## Services
-1. **Web Architecture** — Next.js, cloud systems, API design, scalable backends
-2. **UI/UX Design** — High-fidelity interfaces, Figma prototypes, design systems
-3. **Creative Dev** — WebGL, Three.js, Framer Motion, immersive 3D animations
-4. **Digital Strategy** — Roadmaps, SEO, growth planning, analytics setup
+Key facts about VibeWebStudio:
+- We build high-quality websites, web apps, and e-commerce stores
+- Services include: Web Design, Web Development, E-commerce, SEO, Branding, and Maintenance
+- Typical project timelines: Landing pages 1–2 weeks, full websites 3–6 weeks, web apps 6–12 weeks
+- Pricing is project-based and depends on scope — clients should reach out for a custom quote via the contact form
+- We work with small businesses, startups, and entrepreneurs
+- Website: vibewebstudio.in
+- Contact email: vibewebstudio91@gmail.com
 
-## Pricing (in Indian Rupees)
-- **Basic** — ₹5,000/project: 5 pages, responsive dev, basic SEO
-- **Pro** — ₹7,000/project: 12 pages, advanced SEO, animated interactions, content strategy
-- **Premium** — ₹12,000/project: unlimited pages, API integrations, brand kit, 1-year support
-- Prices are flexible depending on scope — always push to a discovery call for exact quotes
+Guidelines:
+- Keep replies concise and friendly (2–4 sentences max unless more detail is genuinely needed)
+- Always encourage users to fill out the contact form for quotes or detailed project discussions
+- Do not invent specific prices — say pricing depends on scope and offer to connect them with the team
+- If asked something unrelated to VibeWebStudio/web services, politely redirect to what you can help with
+- Use plain text only — no markdown headers or bullet points in replies`;
 
-## Key Points
-- Typical timeline: 2–6 weeks depending on plan
-- Tech stack: Next.js, React, TailwindCSS, Framer Motion, Node.js
-- Always end with a CTA: fill out the contact form or hit "Start Project"
+export async function POST(request) {
+  // ── 1. Rate limit ──────────────────────────────────────────────────────────
+  const ip     = getIP(request);
+  const result = await chatLimiter.limit(ip);
 
-Keep it real, keep it viby. ✨
-`.trim();
+  if (!result.success) {
+    return Response.json(
+      { error: "You're sending messages too quickly. Please wait a moment." },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit":     String(result.limit),
+          "X-RateLimit-Remaining": "0",
+          "X-RateLimit-Reset":     String(result.reset),
+          "Retry-After":           "60",
+        },
+      }
+    );
+  }
 
-export async function POST(req) {
+  // ── 2. Parse body ──────────────────────────────────────────────────────────
+  let body;
   try {
-    const { messages } = await req.json();
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
 
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return Response.json({ error: "Messages array is required." }, { status: 400 });
-    }
+  const { messages } = body ?? {};
 
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return Response.json({ error: "messages array is required." }, { status: 400 });
+  }
+
+  // Sanitise: only keep role + content, enforce limits
+  const sanitised = messages
+    .filter((m) => m?.role === "user" || m?.role === "assistant")
+    .slice(-20) // keep last 20 turns maximum
+    .map((m) => ({
+      role:    m.role,
+      content: String(m.content ?? "").slice(0, 1000),
+    }));
+
+  if (sanitised.length === 0) {
+    return Response.json({ error: "No valid messages provided." }, { status: 400 });
+  }
+
+  // ── 3. Call Anthropic ──────────────────────────────────────────────────────
+  try {
     const response = await client.messages.create({
-      model: "claude-3-5-sonnet-20241022",
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      messages: messages.slice(-20),
+      model:      "claude-3-5-haiku-20241022",
+      max_tokens: 512,
+      system:     SYSTEM_PROMPT,
+      messages:   sanitised,
     });
 
-    return Response.json({ reply: response.content[0]?.text });
-  } catch (error) {
-    console.error("[/api/chat]", error);
-    if (error?.status === 429) {
-      return Response.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
-    }
-    return Response.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+    const reply = response.content?.[0]?.text ?? "Sorry, I couldn't generate a response. Please try again.";
+    return Response.json({ reply });
+
+  } catch (err) {
+    console.error("[chat] Anthropic error:", err?.message ?? err);
+    return Response.json(
+      { error: "AI service temporarily unavailable. Please try again or reach out via the contact form." },
+      { status: 502 }
+    );
   }
 }
