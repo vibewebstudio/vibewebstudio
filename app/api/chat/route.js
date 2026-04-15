@@ -1,92 +1,97 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { chatLimiter, getIP } from "@/lib/ratelimit";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const SYSTEM_PROMPT = `You are Vibe, the friendly AI assistant for VibeWebStudio — a premium web design and development studio.
-
-Your role is to help potential clients learn about VibeWebStudio's services, pricing, timelines, and process.
-
-Key facts about VibeWebStudio:
-- We build high-quality websites, web apps, and e-commerce stores
-- Services include: Web Design, Web Development, E-commerce, SEO, Branding, and Maintenance
-- Typical project timelines: Landing pages 1–2 weeks, full websites 3–6 weeks, web apps 6–12 weeks
-- Pricing is project-based and depends on scope — clients should reach out for a custom quote via the contact form
-- We work with small businesses, startups, and entrepreneurs
-- Website: vibewebstudio.in
-- Contact email: vibewebstudio91@gmail.com
-
-Guidelines:
-- Keep replies concise and friendly (2–4 sentences max unless more detail is genuinely needed)
-- Always encourage users to fill out the contact form for quotes or detailed project discussions
-- Do not invent specific prices — say pricing depends on scope and offer to connect them with the team
-- If asked something unrelated to VibeWebStudio/web services, politely redirect to what you can help with
-- Use plain text only — no markdown headers or bullet points in replies`;
+import nodemailer from "nodemailer";
 
 export async function POST(request) {
-  // ── 1. Rate limit ──────────────────────────────────────────────────────────
-  const ip     = getIP(request);
-  const result = await chatLimiter.limit(ip);
-
-  if (!result.success) {
-    return Response.json(
-      { error: "You're sending messages too quickly. Please wait a moment." },
-      {
-        status: 429,
-        headers: {
-          "X-RateLimit-Limit":     String(result.limit),
-          "X-RateLimit-Remaining": "0",
-          "X-RateLimit-Reset":     String(result.reset),
-          "Retry-After":           "60",
-        },
-      }
-    );
-  }
-
-  // ── 2. Parse body ──────────────────────────────────────────────────────────
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return Response.json({ error: "Invalid JSON body." }, { status: 400 });
-  }
+    // ── Parse body ─────────────────────────────────────────
+    const body = await request.json();
+    const { name, email, company, projectType, budget, message } = body || {};
 
-  const { messages } = body ?? {};
+    // ── Validation ─────────────────────────────────────────
+    if (!name?.trim())
+      return Response.json({ error: "Name is required." }, { status: 400 });
 
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return Response.json({ error: "messages array is required." }, { status: 400 });
-  }
+    if (!email?.trim())
+      return Response.json({ error: "Email is required." }, { status: 400 });
 
-  // Sanitise: only keep role + content, enforce limits
-  const sanitised = messages
-    .filter((m) => m?.role === "user" || m?.role === "assistant")
-    .slice(-20) // keep last 20 turns maximum
-    .map((m) => ({
-      role:    m.role,
-      content: String(m.content ?? "").slice(0, 1000),
-    }));
+    if (!message?.trim())
+      return Response.json({ error: "Message is required." }, { status: 400 });
 
-  if (sanitised.length === 0) {
-    return Response.json({ error: "No valid messages provided." }, { status: 400 });
-  }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return Response.json(
+        { error: "Enter a valid email address." },
+        { status: 400 }
+      );
+    }
 
-  // ── 3. Call Anthropic ──────────────────────────────────────────────────────
-  try {
-    const response = await client.messages.create({
-      model:      "claude-3-5-haiku-20241022",
-      max_tokens: 512,
-      system:     SYSTEM_PROMPT,
-      messages:   sanitised,
+    // ── SMTP Transport (FIXED FOR VERCEL) ──────────────────
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
     });
 
-    const reply = response.content?.[0]?.text ?? "Sorry, I couldn't generate a response. Please try again.";
-    return Response.json({ reply });
+    // ── Send Email ─────────────────────────────────────────
+    await transporter.sendMail({
+      from: `"VibeWebStudio Contact" <${process.env.GMAIL_USER}>`,
+      to: process.env.STUDIO_EMAIL, // ✅ better practice
+      replyTo: email,
+      subject: `New Enquiry from ${name}${company ? ` — ${company}` : ""}`,
+      html: `
+        <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:24px;background:#0e0e13;color:#e8e6f0;border-radius:12px">
+          <h2 style="color:#bb9eff;margin-top:0">New Contact Form Submission</h2>
+
+          <table style="width:100%;border-collapse:collapse">
+            <tr>
+              <td style="padding:8px 0;color:#9f9dac;width:140px">Name</td>
+              <td style="padding:8px 0">${name}</td>
+            </tr>
+
+            <tr>
+              <td style="padding:8px 0;color:#9f9dac">Email</td>
+              <td style="padding:8px 0">
+                <a href="mailto:${email}" style="color:#00cffc">${email}</a>
+              </td>
+            </tr>
+
+            ${
+              company
+                ? `<tr><td style="padding:8px 0;color:#9f9dac">Business</td><td style="padding:8px 0">${company}</td></tr>`
+                : ""
+            }
+
+            ${
+              projectType
+                ? `<tr><td style="padding:8px 0;color:#9f9dac">Project Type</td><td style="padding:8px 0">${projectType}</td></tr>`
+                : ""
+            }
+
+            ${
+              budget
+                ? `<tr><td style="padding:8px 0;color:#9f9dac">Budget</td><td style="padding:8px 0">${budget}</td></tr>`
+                : ""
+            }
+          </table>
+
+          <hr style="border:1px solid rgba(72,71,77,0.3);margin:16px 0"/>
+
+          <h3 style="color:#bb9eff;margin-top:0">Message</h3>
+          <p style="white-space:pre-wrap;line-height:1.6">${message}</p>
+        </div>
+      `,
+    });
+
+    return Response.json({ success: true });
 
   } catch (err) {
-    console.error("[chat] Anthropic error:", err?.message ?? err);
+    console.error("[contact] Email error:", err);
     return Response.json(
-      { error: "AI service temporarily unavailable. Please try again or reach out via the contact form." },
-      { status: 502 }
+      { error: "Failed to send message. Please try again later." },
+      { status: 500 }
     );
   }
 }
