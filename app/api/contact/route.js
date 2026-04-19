@@ -42,7 +42,14 @@ export async function POST(request) {
   }
 
   // Basic length guards against abuse
-  if (name.length > 100 || email.length > 200 || message.length > 5000) {
+  if (
+    name.length > 100 ||
+    email.length > 200 ||
+    message.length > 5000 ||
+    (company?.length ?? 0) > 100 ||
+    (projectType?.length ?? 0) > 100 ||
+    (budget?.length ?? 0) > 100
+  ) {
     return Response.json({ error: "Input too long." }, { status: 400 });
   }
 
