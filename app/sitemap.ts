@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next'
 
+export const revalidate = 0  // 👈 add this line
+
 const BASE_URL = 'https://vibewebstudio.vercel.app'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -10,6 +12,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1.0,
     },
-
   ]
 }
