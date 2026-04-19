@@ -1,6 +1,7 @@
 "use client";
 
 import { scrollTo, createRipple, magnetic, tilt } from "@/lib/interactions";
+import ShootingStars from "@/components/ui/ShootingStars";
 
 const SERVICES = [
   {
@@ -32,10 +33,14 @@ const SERVICES = [
 export default function Services() {
   return (
     <section id="services" style={{ background:"var(--c-sc-low)", padding:"9rem 1.5rem", position:"relative", overflow:"hidden" }}>
+
+      {/* Shooting Stars Background */}
+      <ShootingStars />
+
       <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:400, height:400, borderRadius:"50%", top:"0%", right:"-8%", background:"rgba(187,158,255,0.10)", filter:"blur(100px)", pointerEvents:"none", "--dur":"11s" }} />
       <div className="svc-dot" aria-hidden="true" style={{ position:"absolute", width:280, height:280, borderRadius:"50%", bottom:"5%", left:"-5%", background:"rgba(0,207,252,0.08)", filter:"blur(80px)", pointerEvents:"none", "--dur":"13s", animationDelay:"2s" }} />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto" style={{ position:"relative", zIndex:1 }}>
         <div className="mb-20 reveal-left">
           <div className="flex items-center gap-3 mb-4">
             <div style={{ height:2, width:32, background:"linear-gradient(90deg,var(--c-primary),transparent)", borderRadius:2 }} className="line-accent" />

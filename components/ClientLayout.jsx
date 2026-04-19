@@ -1,17 +1,69 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatWidget from "@/components/ChatWidget";
 import SplashScreen from "@/components/SplashScreen";
 
 export default function ClientLayout({ children }) {
-  // Default false — site is ALWAYS visible immediately.
-  // Splash only mounts if this is a genuinely first visit.
   const [showSplash, setShowSplash] = useState(false);
+  const cursorRef = useRef(null);
+  const trailRef  = useRef(null);
+  const pos       = useRef({ x: -100, y: -100 });
+  const trail     = useRef({ x: -100, y: -100 });
+  const rafRef    = useRef(null);
 
   useEffect(() => {
     const seen = sessionStorage.getItem("vws_splash_seen");
     if (!seen) setShowSplash(true);
+  }, []);
+
+  // ── Custom cursor (desktop / mouse only) ──────────────────────────────
+  useEffect(() => {
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouch) return; // skip on mobile
+
+    const dot   = cursorRef.current;
+    const ring  = trailRef.current;
+    if (!dot || !ring) return;
+
+    const onMove = (e) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+
+      // Dot follows instantly
+      dot.style.transform = `translate(${e.clientX - 5}px, ${e.clientY - 5}px)`;
+
+      // Change colour on interactive elements
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const isInteractive = el?.closest("a, button, [role=button], input, textarea, select");
+      dot.style.background    = isInteractive ? "var(--c-secondary)" : "var(--c-primary)";
+      dot.style.width         = isInteractive ? "16px" : "10px";
+      dot.style.height        = isInteractive ? "16px" : "10px";
+      dot.style.boxShadow     = isInteractive
+        ? "0 0 14px var(--c-secondary), 0 0 36px rgba(0,207,252,0.35)"
+        : "0 0 14px var(--c-primary),   0 0 36px rgba(187,158,255,0.35)";
+      ring.style.borderColor  = isInteractive
+        ? "rgba(0,207,252,0.5)"
+        : "rgba(187,158,255,0.35)";
+      ring.style.width        = isInteractive ? "48px" : "32px";
+      ring.style.height       = isInteractive ? "48px" : "32px";
+    };
+
+    // Ring lags behind with lerp
+    const animate = () => {
+      trail.current.x += (pos.current.x - trail.current.x) * 0.12;
+      trail.current.y += (pos.current.y - trail.current.y) * 0.12;
+      const hw = parseInt(ring.style.width  || "32") / 2;
+      const hh = parseInt(ring.style.height || "32") / 2;
+      ring.style.transform = `translate(${trail.current.x - hw}px, ${trail.current.y - hh}px)`;
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+
+    window.addEventListener("mousemove", onMove);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   function handleSplashDone() {
@@ -20,14 +72,16 @@ export default function ClientLayout({ children }) {
   }
 
   return (
-    <body>
-      {/* Main site is ALWAYS painted — no opacity toggle, no hidden state.
-          This ensures LCP/FCP are not blocked on first load. */}
+    // ✅ FIX: was incorrectly rendering <body> here (layout.jsx already has <body>)
+    <>
+      {/* Cursor elements — hidden on touch via CSS */}
+      <div id="vws-cursor"       ref={cursorRef} aria-hidden="true" />
+      <div id="vws-cursor-trail" ref={trailRef}  aria-hidden="true" />
+
       {children}
 
       <ChatWidget />
 
-      {/* WhatsApp FAB — update href to your real WhatsApp number */}
       <a
         href="https://wa.me/919XXXXXXXXX"
         target="_blank"
@@ -43,6 +97,6 @@ export default function ClientLayout({ children }) {
 
       {/* Splash overlays the site — does NOT hide it */}
       {showSplash && <SplashScreen onComplete={handleSplashDone} />}
-    </body>
+    </>
   );
 }
