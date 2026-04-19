@@ -160,7 +160,10 @@ function useContactForm() {
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-site-request": "1",
+        },
         body: JSON.stringify(fields),
       });
       const data = await res.json();
