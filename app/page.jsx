@@ -301,7 +301,9 @@ function PlexusCanvas() {
 
     const NODE_COUNT = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 9000), 160);
     const CONNECT_DIST = 145;
+    const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
     const CURSOR_RADIUS = 130;
+    const CURSOR_RADIUS_SQ = CURSOR_RADIUS * CURSOR_RADIUS;
     const CURSOR_FORCE  = 0.018;
 
     const nodes = Array.from({ length: NODE_COUNT }, () => {
@@ -349,8 +351,9 @@ function PlexusCanvas() {
         const n = nodes[i];
         n.y += Math.sin(t * n.waveFreq * 60 + n.wavePhase) * 0.12;
         const dx = n.x - mx, dy = n.y - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CURSOR_RADIUS && dist > 0) {
+        const d2 = dx * dx + dy * dy;
+        if (d2 < CURSOR_RADIUS_SQ && d2 > 0) {
+          const dist = Math.sqrt(d2);
           const force = (1 - dist / CURSOR_RADIUS) * CURSOR_FORCE;
           n.vx += (dx / dist) * force * 60;
           n.vy += (dy / dist) * force * 60;
@@ -362,30 +365,32 @@ function PlexusCanvas() {
         n.pulse += 0.025;
         const glow = 0.55 + 0.45 * Math.sin(n.pulse);
         const [r, g, b] = n.pal;
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 6);
-        grad.addColorStop(0, `rgba(${r},${g},${b},${0.22 * glow})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
+
+        // Optimized node rendering: replace createRadialGradient and shadowBlur with multi-layered arcs
         ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 6, 0, Math.PI * 2);
-        ctx.fillStyle = grad; ctx.fill();
+        ctx.fillStyle = `rgba(${r},${g},${b},${0.15 * glow})`;
+        ctx.fill();
+
         ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${r},${g},${b},${0.85 * glow})`;
-        ctx.shadowBlur = 8 * glow; ctx.shadowColor = `rgba(${r},${g},${b},0.9)`;
-        ctx.fill(); ctx.shadowBlur = 0;
+        ctx.fill();
       }
 
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const ni = nodes[i], nj = nodes[j];
           const dx = ni.x - nj.x, dy = ni.y - nj.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > CONNECT_DIST) continue;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > CONNECT_DIST_SQ) continue;
+          const d = Math.sqrt(d2);
           const alpha = (1 - d / CONNECT_DIST) * 0.28;
           const [r1, g1, b1] = ni.pal, [r2, g2, b2] = nj.pal;
-          const lg = ctx.createLinearGradient(ni.x, ni.y, nj.x, nj.y);
-          lg.addColorStop(0, `rgba(${r1},${g1},${b1},${alpha})`);
-          lg.addColorStop(1, `rgba(${r2},${g2},${b2},${alpha})`);
+
+          // Optimized connection rendering: replace createLinearGradient with flat average color
+          const r = (r1 + r2) >> 1, g = (g1 + g2) >> 1, b = (b1 + b2) >> 1;
           ctx.beginPath(); ctx.moveTo(ni.x, ni.y); ctx.lineTo(nj.x, nj.y);
-          ctx.strokeStyle = lg; ctx.lineWidth = 0.65; ctx.stroke();
+          ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.lineWidth = 0.65; ctx.stroke();
           const phase = (t * 0.012 + i * 0.31 + j * 0.17) % 1;
           const px = ni.x + (nj.x - ni.x) * phase;
           const py = ni.y + (nj.y - ni.y) * phase;
