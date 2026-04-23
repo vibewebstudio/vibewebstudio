@@ -63,7 +63,7 @@ const INTENTS = [
     keywords: ["contact","email","reach","talk","call","connect","speak","get in touch","message","form","touch","discuss","consultation","meeting","response","reply","hear from","support"],
     replies: [
       "Reaching us is simple! 📬 Fill out the **contact form** on this page — we respond within 24 hours. Or email us directly at **vibewebstudio91@gmail.com**. Can't wait to hear about your project!",
-      "Multiple ways to reach us:\n\n• 📋 **Contact form** — on this page (fastest)\n• 📧 **Email** — vibewebstudio91@gmail.com\n• ⏱ Response time — within 24 hours\n\nWe look forward to hearing from you! 😊",
+      "Multiple ways to reach us:\n\n• 📋 **Contact form** — on this page (fastest)\n• 📧 **Email** — vibewebstudio91@gmail.com\n• ⏱ Response time — within 24 hours\n\n We look forward to hearing from you! 😊",
     ],
     contextReplies: {},
   },
