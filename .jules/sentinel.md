@@ -1,0 +1,4 @@
+## 2026-05-14 - [Vulnerable Email Relay in Chat API]
+**Vulnerability:** The `/api/chat` route was implemented as an un-rate-limited email relay. It accepted name, email, and message fields and sent them via Nodemailer without any rate limiting or proper input sanitization, making it a target for spam bots and HTML injection attacks.
+**Learning:** Security fixes should be surgical. Replacing an insecure email relay with a chatbot (AI) might fix the security issue but introduces major functional changes and new dependencies that may not be desired. It's better to secure the existing functionality first.
+**Prevention:** Always implement rate limiting (`chatLimiter`) and input sanitization (`escapeHtml`) for any endpoint that performs side effects like sending emails. Ensure CSRF protection headers (`x-site-request`) are consistently applied across frontend and middleware.
