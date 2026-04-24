@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
  *   1. Inject security response headers
  *   2. Block cross-origin requests to /api/* (CSRF guard)
  */
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl;
   const response = NextResponse.next();
   const headers = response.headers;
