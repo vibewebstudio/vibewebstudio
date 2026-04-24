@@ -27,29 +27,6 @@ function useReveal() {
   }, []);
 }
 
-// ── CURSOR GLOW TRAIL ──────────────────────────────────────────────────────
-function useCursor() {
-  useEffect(() => {
-    const cursor = document.getElementById("vws-cursor");
-    const trail  = document.getElementById("vws-cursor-trail");
-    if (!cursor || !trail) return;
-    let mx = 0, my = 0, tx = 0, ty = 0, raf;
-    const onMove = (e) => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
-    };
-    function animTrail() {
-      tx += (mx - tx) * 0.1;
-      ty += (my - ty) * 0.1;
-      trail.style.transform = `translate(${tx - 16}px, ${ty - 16}px)`;
-      raf = requestAnimationFrame(animTrail);
-    }
-    document.addEventListener("mousemove", onMove);
-    raf = requestAnimationFrame(animTrail);
-    return () => { document.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
-  }, []);
-}
-
 // ── PARALLAX SCROLL ────────────────────────────────────────────────────────
 function useParallax() {
   useEffect(() => {
@@ -301,6 +278,7 @@ function PlexusCanvas() {
 
     const NODE_COUNT = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 9000), 160);
     const CONNECT_DIST = 145;
+    const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
     const CURSOR_RADIUS = 130;
     const CURSOR_FORCE  = 0.018;
 
@@ -377,15 +355,14 @@ function PlexusCanvas() {
         for (let j = i + 1; j < nodes.length; j++) {
           const ni = nodes[i], nj = nodes[j];
           const dx = ni.x - nj.x, dy = ni.y - nj.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > CONNECT_DIST) continue;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > CONNECT_DIST_SQ) continue;
+          const d = Math.sqrt(distSq);
           const alpha = (1 - d / CONNECT_DIST) * 0.28;
-          const [r1, g1, b1] = ni.pal, [r2, g2, b2] = nj.pal;
-          const lg = ctx.createLinearGradient(ni.x, ni.y, nj.x, nj.y);
-          lg.addColorStop(0, `rgba(${r1},${g1},${b1},${alpha})`);
-          lg.addColorStop(1, `rgba(${r2},${g2},${b2},${alpha})`);
+          const [r, g, b] = ni.pal;
           ctx.beginPath(); ctx.moveTo(ni.x, ni.y); ctx.lineTo(nj.x, nj.y);
-          ctx.strokeStyle = lg; ctx.lineWidth = 0.65; ctx.stroke();
+          ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.lineWidth = 0.65; ctx.stroke();
           const phase = (t * 0.012 + i * 0.31 + j * 0.17) % 1;
           const px = ni.x + (nj.x - ni.x) * phase;
           const py = ni.y + (nj.y - ni.y) * phase;
@@ -1426,7 +1403,6 @@ function Footer() {
 // ── PAGE ─────────────────────────────────────────────────────────────────────
 export default function Home() {
   useReveal();
-  useCursor();
   useParallax();
   useBackToTop();
 
@@ -1444,9 +1420,6 @@ export default function Home() {
         <ContactSection />
       </main>
       <Footer />
-
-      <div id="vws-cursor" aria-hidden="true" />
-      <div id="vws-cursor-trail" aria-hidden="true" />
 
       <button id="vws-back-top" aria-label="Scroll back to top"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
