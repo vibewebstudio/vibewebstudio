@@ -27,29 +27,6 @@ function useReveal() {
   }, []);
 }
 
-// ── CURSOR GLOW TRAIL ──────────────────────────────────────────────────────
-function useCursor() {
-  useEffect(() => {
-    const cursor = document.getElementById("vws-cursor");
-    const trail  = document.getElementById("vws-cursor-trail");
-    if (!cursor || !trail) return;
-    let mx = 0, my = 0, tx = 0, ty = 0, raf;
-    const onMove = (e) => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
-    };
-    function animTrail() {
-      tx += (mx - tx) * 0.1;
-      ty += (my - ty) * 0.1;
-      trail.style.transform = `translate(${tx - 16}px, ${ty - 16}px)`;
-      raf = requestAnimationFrame(animTrail);
-    }
-    document.addEventListener("mousemove", onMove);
-    raf = requestAnimationFrame(animTrail);
-    return () => { document.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
-  }, []);
-}
-
 // ── PARALLAX SCROLL ────────────────────────────────────────────────────────
 function useParallax() {
   useEffect(() => {
@@ -302,6 +279,8 @@ function PlexusCanvas() {
     const NODE_COUNT = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 9000), 160);
     const CONNECT_DIST = 145;
     const CURSOR_RADIUS = 130;
+    const CURSOR_RADIUS_SQ = CURSOR_RADIUS * CURSOR_RADIUS;
+    const CONNECT_DIST_SQ  = CONNECT_DIST * CONNECT_DIST;
     const CURSOR_FORCE  = 0.018;
 
     const nodes = Array.from({ length: NODE_COUNT }, () => {
@@ -349,8 +328,9 @@ function PlexusCanvas() {
         const n = nodes[i];
         n.y += Math.sin(t * n.waveFreq * 60 + n.wavePhase) * 0.12;
         const dx = n.x - mx, dy = n.y - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CURSOR_RADIUS && dist > 0) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < CURSOR_RADIUS_SQ && distSq > 0) {
+          const dist = Math.sqrt(distSq);
           const force = (1 - dist / CURSOR_RADIUS) * CURSOR_FORCE;
           n.vx += (dx / dist) * force * 60;
           n.vy += (dy / dist) * force * 60;
@@ -369,16 +349,17 @@ function PlexusCanvas() {
         ctx.fillStyle = grad; ctx.fill();
         ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${r},${g},${b},${0.85 * glow})`;
-        ctx.shadowBlur = 8 * glow; ctx.shadowColor = `rgba(${r},${g},${b},0.9)`;
-        ctx.fill(); ctx.shadowBlur = 0;
+        // Optimization: Removing shadowBlur as it's expensive; radial gradient provides sufficient glow.
+        ctx.fill();
       }
 
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const ni = nodes[i], nj = nodes[j];
           const dx = ni.x - nj.x, dy = ni.y - nj.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > CONNECT_DIST) continue;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > CONNECT_DIST_SQ) continue;
+          const d = Math.sqrt(distSq);
           const alpha = (1 - d / CONNECT_DIST) * 0.28;
           const [r1, g1, b1] = ni.pal, [r2, g2, b2] = nj.pal;
           const lg = ctx.createLinearGradient(ni.x, ni.y, nj.x, nj.y);
@@ -1426,7 +1407,6 @@ function Footer() {
 // ── PAGE ─────────────────────────────────────────────────────────────────────
 export default function Home() {
   useReveal();
-  useCursor();
   useParallax();
   useBackToTop();
 
@@ -1444,9 +1424,6 @@ export default function Home() {
         <ContactSection />
       </main>
       <Footer />
-
-      <div id="vws-cursor" aria-hidden="true" />
-      <div id="vws-cursor-trail" aria-hidden="true" />
 
       <button id="vws-back-top" aria-label="Scroll back to top"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
