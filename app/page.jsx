@@ -301,7 +301,9 @@ function PlexusCanvas() {
 
     const NODE_COUNT = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 9000), 160);
     const CONNECT_DIST = 145;
+    const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
     const CURSOR_RADIUS = 130;
+    const CURSOR_RADIUS_SQ = CURSOR_RADIUS * CURSOR_RADIUS;
     const CURSOR_FORCE  = 0.018;
 
     const nodes = Array.from({ length: NODE_COUNT }, () => {
@@ -349,8 +351,11 @@ function PlexusCanvas() {
         const n = nodes[i];
         n.y += Math.sin(t * n.waveFreq * 60 + n.wavePhase) * 0.12;
         const dx = n.x - mx, dy = n.y - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CURSOR_RADIUS && dist > 0) {
+        const dsq = dx * dx + dy * dy;
+
+        // BOLT: Avoid Math.sqrt for distance checks
+        if (dsq < CURSOR_RADIUS_SQ && dsq > 0) {
+          const dist = Math.sqrt(dsq);
           const force = (1 - dist / CURSOR_RADIUS) * CURSOR_FORCE;
           n.vx += (dx / dist) * force * 60;
           n.vy += (dy / dist) * force * 60;
@@ -362,23 +367,28 @@ function PlexusCanvas() {
         n.pulse += 0.025;
         const glow = 0.55 + 0.45 * Math.sin(n.pulse);
         const [r, g, b] = n.pal;
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 6);
-        grad.addColorStop(0, `rgba(${r},${g},${b},${0.22 * glow})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
+
+        // BOLT: Simplified node rendering to reduce GPU overhead
         ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 6, 0, Math.PI * 2);
-        ctx.fillStyle = grad; ctx.fill();
+        ctx.fillStyle = `rgba(${r},${g},${b},${0.08 * glow})`;
+        ctx.fill();
+
         ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${r},${g},${b},${0.85 * glow})`;
-        ctx.shadowBlur = 8 * glow; ctx.shadowColor = `rgba(${r},${g},${b},0.9)`;
-        ctx.fill(); ctx.shadowBlur = 0;
+        // BOLT: Removed shadowBlur as it is a major performance bottleneck in animation loops
+        ctx.fill();
       }
 
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const ni = nodes[i], nj = nodes[j];
           const dx = ni.x - nj.x, dy = ni.y - nj.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > CONNECT_DIST) continue;
+          const dsq = dx * dx + dy * dy;
+
+          // BOLT: Early exit using squared distance
+          if (dsq > CONNECT_DIST_SQ) continue;
+
+          const d = Math.sqrt(dsq);
           const alpha = (1 - d / CONNECT_DIST) * 0.28;
           const [r1, g1, b1] = ni.pal, [r2, g2, b2] = nj.pal;
           const lg = ctx.createLinearGradient(ni.x, ni.y, nj.x, nj.y);
@@ -409,12 +419,10 @@ function PlexusCanvas() {
 
       if (mx > 0 && mx < cw) {
         if (t % 28 === 0) ripples.push({ x: mx, y: my, r: 0, life: 1 });
-        const halo = ctx.createRadialGradient(mx, my, 0, mx, my, CURSOR_RADIUS);
-        halo.addColorStop(0, "rgba(187,158,255,0.12)");
-        halo.addColorStop(0.5, "rgba(0,207,252,0.06)");
-        halo.addColorStop(1, "rgba(0,0,0,0)");
+        // BOLT: Use a simpler fill for the cursor halo instead of a radial gradient
         ctx.beginPath(); ctx.arc(mx, my, CURSOR_RADIUS, 0, Math.PI * 2);
-        ctx.fillStyle = halo; ctx.fill();
+        ctx.fillStyle = "rgba(187,158,255,0.04)";
+        ctx.fill();
       }
 
       for (let i = ripples.length - 1; i >= 0; i--) {
